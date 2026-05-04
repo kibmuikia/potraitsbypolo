@@ -1,8 +1,6 @@
-# Welcome to Horizon!
+# Portraits by Polo
 
-This is a free photography theme for Astro created by [Cosmic Themes](https://cosmicthemes.com/).
-
-[website demo](https://horizon.cosmicthemes.com/)
+Portfolio website for [@portraitsbypolo](https://www.instagram.com/portraitsbypolo/) — Global Film Camera Operator. Built with Astro and Tailwind CSS on the Horizon theme by [Cosmic Themes](https://cosmicthemes.com/).
 
 ## Quickstart
 

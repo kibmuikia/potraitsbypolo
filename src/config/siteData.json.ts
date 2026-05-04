@@ -16,23 +16,23 @@ export interface SiteDataProps {
 
 // Update this file with your site specific information
 const siteData: SiteDataProps = {
-	name: "Horizon Photography",
+	name: "Portraits by Polo",
 	// Your website's title and description (meta fields)
-	title: "Horizon - a beautiful photography website template made with Astro and Tailwind CSS",
+	title: "Portraits by Polo — Global Film Camera Operator",
 	description:
-		"Get your next website up and running quickly with our beautiful website theme designed using Astro and Tailwind CSS. Perfect for freelancers, developers, startups, and personal use.",
+		"Vincere est vivere™. Polo is a global film camera operator capturing portraits, weddings, and cinematic moments. View the portfolio and get in touch.",
 	useViewTransitions: true,
 	// Your information!
 	author: {
-		name: "Cosmic Themes",
-		email: "creator@cosmicthemes.com",
-		twitter: "Cosmic_Themes",
+		name: "portraitsbypolo",
+		email: "",
+		twitter: "portraitsbypolo",
 	},
 
 	// default image for meta tags if the page doesn't have an image already
 	defaultImage: {
 		src: "/images/cosmic-themes-logo.jpg",
-		alt: "Cosmic Themes logo",
+		alt: "Portraits by Polo",
 	},
 };
 
