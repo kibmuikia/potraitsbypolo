@@ -6,10 +6,13 @@ import { defineConfig } from "astro/config";
 import AutoImport from "astro-auto-import";
 import icon from "astro-icon"; // https://www.astroicon.dev/guides/upgrade/v1/
 
+import cloudflare from "@astrojs/cloudflare";
+
 // https://astro.build/config
 export default defineConfig({
-	site: "https://horizon.cosmicthemes.com",
-	integrations: [
+    site: "https://horizon.cosmicthemes.com",
+
+    integrations: [
 		// example auto import component into blog post mdx files
 		AutoImport({
 			imports: [
@@ -46,11 +49,14 @@ export default defineConfig({
 			SVG: false, // astro-icon handles this
 		}),
 	],
-	vite: {
+
+    vite: {
 		plugins: [tailwindcss()],
 		// stop inlining short scripts to fix issues with ClientRouter: https://github.com/withastro/astro/issues/12804
 		build: {
 			assetsInlineLimit: 0,
 		},
 	},
+
+    adapter: cloudflare()
 });
