@@ -1,6 +1,6 @@
 ---
-title: HANNAH & MARCO
-testimonial: Hiring Jenna was one of the best decisions we made for our wedding. Not only was their work incredibly professional and artistic, but they also made us feel so comfortable and at ease throughout the entire process.
+title: Ross Franks — Buni Media
+testimonial: Whether he's operating camera or rigging lights, Muti is dependable, skilled, and good to work with. I'd recommend him on any production.
 image: ./couple-2-crop.jpg
-order: 1
+order: 2
 ---

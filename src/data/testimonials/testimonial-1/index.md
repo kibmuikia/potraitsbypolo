@@ -1,6 +1,6 @@
 ---
-title: JOSÉ & MELANIE
-testimonial: Jenna has a way of making us feel like the only people in the room. The photos she delivered were beyond our expectations, capturing the joy, love, and beauty of our special day in a way that we will treasure forever.
+title: Ahmed S. Deen — Cafeluna Productions
+testimonial: Muti brings both technical precision and a calm, collaborative energy to set. His lighting work on our productions has consistently elevated what we're putting on screen.
 image: ./couple-8-crop.jpg
 order: 1
 ---

@@ -21,37 +21,38 @@ import image2 from "@assets/images/couple-6-crop.jpg";
 // This is designed for 3 pricing items, but can be modified to support more
 const pricingData: pricingItem[] = [
 	{
-		name: "Elopement",
+		name: "Mini Session",
 		featured: false,
-		price: 1999,
+		price: 8500,
 		features: [
-			"200+ Professionally Edited Photos",
-			"Private Online Gallery",
-			"*Additional Charge Based On Travel Distance",
-			"*Additional Charge For Videography",
+			"1.5 hrs on location",
+			"30+ professionally edited photos",
+			"Private online gallery",
+			"*Travel outside Nairobi charged separately",
 		],
 		image: image1,
 	},
 	{
-		name: "Wedding",
+		name: "Personal Branding",
 		featured: true,
-		price: 2999,
+		price: 22000,
 		features: [
-			"300+ Professionally Edited Photos",
-			"Private Online Gallery",
-			"All-Day Photography Coverage",
-			"*Additional Charge For Videography",
+			"3 hrs on location",
+			"80+ professionally edited photos",
+			"2 outfit changes",
+			"Private online gallery",
 		],
 		image: image2,
 	},
 	{
-		name: "Engagement",
+		name: "Full Editorial Day",
 		featured: false,
-		price: 799,
+		price: 55000,
 		features: [
-			"100+ Professionally Edited Photos",
-			"Private Online Gallery",
-			"*Additional Charge Based On Travel Distance",
+			"8 hrs on location",
+			"150+ professionally edited photos",
+			"Commercial usage rights included",
+			"Private online gallery",
 		],
 		image: image3,
 	},
@@ -60,7 +61,7 @@ const pricingData: pricingItem[] = [
 
 <section id="pricing" class="mx-auto max-w-6xl scroll-mt-10 px-4 py-8 md:py-12">
 	<div class="mx-auto max-w-6xl text-center">
-		<h2 class="h2 text-pretty uppercase">Photography Packages</h2>
+		<h2 class="h2 text-pretty uppercase">Portrait Sessions</h2>
 	</div>
 
 	<!-- works for 3 pricing plans, adjust grid cols here to support more or less -->
@@ -99,7 +100,7 @@ const pricingData: pricingItem[] = [
 							</ul>
 						</div>
 						<p class="font-decorative text-base-800 mt-6 flex justify-center text-center text-[5rem] leading-none">
-							${plan.price}
+							<span class="flex h-full text-[2rem] self-start pt-4">Ksh</span>{plan.price.toLocaleString()}
 							<span class="flex h-full text-[3.5rem]">+</span>
 						</p>
 					</div>
