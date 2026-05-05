@@ -1,18 +1,19 @@
+// https://www.astroicon.dev/guides/upgrade/v1/
+
+import cloudflare from "@astrojs/cloudflare";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import compress from "@playform/compress";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "astro/config";
 import AutoImport from "astro-auto-import";
-import icon from "astro-icon"; // https://www.astroicon.dev/guides/upgrade/v1/
-
-import cloudflare from "@astrojs/cloudflare";
+import icon from "astro-icon";
+import { defineConfig } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
-    site: "https://horizon.cosmicthemes.com",
+	site: "https://potraitsbypolo.kibdev.workers.dev/",
 
-    integrations: [
+	integrations: [
 		// example auto import component into blog post mdx files
 		AutoImport({
 			imports: [
@@ -50,7 +51,7 @@ export default defineConfig({
 		}),
 	],
 
-    vite: {
+	vite: {
 		plugins: [tailwindcss()],
 		// stop inlining short scripts to fix issues with ClientRouter: https://github.com/withastro/astro/issues/12804
 		build: {
@@ -58,5 +59,5 @@ export default defineConfig({
 		},
 	},
 
-    adapter: cloudflare()
+	adapter: cloudflare(),
 });
