@@ -43,7 +43,7 @@ const featureData: FeatureCardData[] = [
 			class="mt-6 grid gap-10 gap-y-16 sm:grid-cols-2 md:mt-12 lg:grid-cols-4"
 		>
 			{
-				featureData.map((feature, idx) => (
+				featureData.map((feature, _idx) => (
 					<FeatureCardNumbers largeText={feature.largeText} description={feature.description} />
 				))
 			}
