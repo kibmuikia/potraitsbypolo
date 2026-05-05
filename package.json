@@ -1,53 +1,62 @@
 {
-  "name": "potraitsbypolo",
-  "type": "module",
-  "version": "2.1.0",
-  "scripts": {
-    "dev": "astro dev --host",
-    "dev:check": "astro check && astro dev --host",
-    "start": "astro dev",
-    "build": "astro build",
-    "preview": "pnpm run build && wrangler dev",
-    "astro": "astro",
-    "format": "eslint . --fix && prettier -w \"**/*\" --ignore-unknown --cache",
-    "lint": "eslint .",
-    "check": "astro check",
-    "deploy": "pnpm run build && wrangler deploy",
-    "cf-typegen": "wrangler types"
-  },
-  "dependencies": {
-    "@astrojs/cloudflare": "12",
-    "@astrojs/mdx": "4.2.6",
-    "@astrojs/rss": "4.0.11",
-    "@astrojs/sitemap": "3.3.1",
-    "@fontsource-variable/playfair-display": "5.2.5",
-    "@fontsource-variable/raleway": "5.2.5",
-    "@fontsource-variable/work-sans": "5.2.5",
-    "@fontsource/cinzel-decorative": "5.2.5",
-    "@iconify-json/tabler": "1.2.17",
-    "@tailwindcss/forms": "0.5.10",
-    "@tailwindcss/vite": "4.1.5",
-    "astro": "5.7.12",
-    "astro-auto-import": "0.4.4",
-    "astro-icon": "1.1.5",
-    "astro-seo": "0.8.4",
-    "tailwindcss": "4.1.5"
-  },
-  "devDependencies": {
-    "@eslint/js": "9.26.0",
-    "@playform/compress": "0.1.9",
-    "eslint": "9.26.0",
-    "eslint-plugin-astro": "1.3.1",
-    "eslint-plugin-jsx-a11y": "6.10.2",
-    "eslint-plugin-prettier": "5.4.0",
-    "eslint-plugin-simple-import-sort": "12.1.1",
-    "globals": "16.1.0",
-    "prettier-plugin-astro": "0.14.1",
-    "prettier-plugin-tailwindcss": "0.6.11",
-    "typescript-eslint": "8.32.0",
-    "wrangler": "^4.87.0"
-  },
-  "overrides": {
-    "sharp": "^0.33.0"
-  }
+	"name": "potraitsbypolo",
+	"type": "module",
+	"version": "2.1.0",
+	"engines": {
+		"node": ">=22.12.0"
+	},
+	"scripts": {
+		"dev": "astro dev --host",
+		"dev:check": "astro check && astro dev --host",
+		"dev:cloudflare": "npx astro build && npx wrangler dev",
+		"start": "astro dev",
+		"build": "astro build",
+		"preview": "pnpm run build && wrangler dev",
+		"astro": "astro",
+		"format": "eslint . --fix && prettier -w \"**/*\" --ignore-unknown --cache",
+		"lint": "eslint .",
+		"check": "astro check",
+		"deploy": "pnpm run build && wrangler deploy",
+		"cf-typegen": "wrangler types"
+	},
+	"dependencies": {
+		"@astrojs/cloudflare": "^13.3.1",
+		"@astrojs/mdx": "5.0.4",
+		"@astrojs/rss": "4.0.18",
+		"@astrojs/sitemap": "3.7.2",
+		"@fontsource-variable/playfair-display": "5.2.8",
+		"@fontsource-variable/raleway": "5.2.8",
+		"@fontsource-variable/work-sans": "5.2.8",
+		"@fontsource/cinzel-decorative": "5.2.8",
+		"@iconify-json/tabler": "1.2.33",
+		"@tailwindcss/forms": "0.5.11",
+		"@tailwindcss/vite": "4.2.4",
+		"astro": "6.2.2",
+		"astro-auto-import": "0.5.1",
+		"astro-icon": "1.1.5",
+		"astro-seo": "1.1.0",
+		"tailwindcss": "4.2.4"
+	},
+	"devDependencies": {
+		"@eslint/js": "10.0.1",
+		"@playform/compress": "0.2.3",
+		"eslint": "10.3.0",
+		"eslint-plugin-astro": "1.7.0",
+		"eslint-plugin-jsx-a11y": "6.10.2",
+		"eslint-plugin-prettier": "5.5.5",
+		"eslint-plugin-simple-import-sort": "13.0.0",
+		"globals": "17.6.0",
+		"prettier-plugin-astro": "0.14.1",
+		"prettier-plugin-tailwindcss": "0.8.0",
+		"typescript-eslint": "8.59.2",
+		"wrangler": "^4.87.0"
+	},
+	"overrides": {
+		"sharp": "^0.33.0"
+	},
+	"pnpm": {
+		"overrides": {
+			"@cloudflare/vite-plugin": "1.32.3"
+		}
+	}
 }

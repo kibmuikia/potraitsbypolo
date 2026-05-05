@@ -12,17 +12,29 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
 # environment variables
 .env
 .env.production
+.env.local
+.env.*.local
 
 # macOS-specific files
 .DS_Store
+Thumbs.db
 
 # Local Netlify folder
 .netlify
 
 docs/
+.playwright-mcp/
+docs_etc/
+.claude/
+.vercel/
 
 # wrangler files
 .wrangler
