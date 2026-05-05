@@ -18,9 +18,9 @@ export interface SiteDataProps {
 const siteData: SiteDataProps = {
 	name: "Portraits by Polo",
 	// Your website's title and description (meta fields)
-	title: "Portraits by Polo — Global Film Camera Operator",
+	title: "Portraits by Polo — Film Camera Operator & Lighting Technician",
 	description:
-		"Vincere est vivere™. Polo is a global film camera operator capturing portraits, weddings, and cinematic moments. View the portfolio and get in touch.",
+		"Vincere est vivere™. Muti Muikia is a Nairobi-based Film Camera Operator & Lighting Technician — Showmax Originals, major brand commercials, and portrait photography. View the portfolio.",
 	useViewTransitions: true,
 	// Your information!
 	author: {
