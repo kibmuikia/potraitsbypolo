@@ -1,7 +1,7 @@
 ---
 title: Scripted Series
 description: Camera operation and key grip work across Showmax Originals and primetime Kenyan television.
-heroImage: ./couple-9-square.jpg
+heroImage: ./hero-scripted.webp
 date: "Jan 1 2024"
 location: Nairobi, Kenya
 images:
