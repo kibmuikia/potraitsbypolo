@@ -1,7 +1,7 @@
 ---
 title: Commercials & Branded Content
 description: Camera, grip, and lighting work for major Kenyan and regional brands — from FMCG to financial services.
-heroImage: ./couple-3-square.jpg
+heroImage: ./hero-commercials.webp
 date: "Dec 1 2022"
 location: Nairobi, Kenya
 images:
