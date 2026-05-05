@@ -16,7 +16,7 @@ interface GenProps extends BaseProps {
 
 const { title = "general", description, image, noindex = false } = Astro.props as GenProps;
 
-let optimizedImage;
+let optimizedImage: Awaited<ReturnType<typeof getImage>> | undefined;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 
 // if this is a blog page we do things differently

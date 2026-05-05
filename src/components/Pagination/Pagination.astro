@@ -8,7 +8,7 @@ interface Props {
 	lastPage: number;
 }
 
-const { prevUrl, currPage, nextUrl, lastPage } = Astro.props as Props;
+const { prevUrl, currPage, nextUrl, lastPage: _lastPage } = Astro.props as Props;
 ---
 
 {
