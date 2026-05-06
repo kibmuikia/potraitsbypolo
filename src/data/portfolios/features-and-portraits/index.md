@@ -6,10 +6,10 @@ date: "Jun 1 2022"
 location: Nairobi, Kenya
 images:
   [
-    [./polo-portrait.webp, ./couple-2-min-3.jpg],
-    [./rings-wood-min-3.jpg, ./seals-min-3.jpg, ./rings-wood-min-3.jpg],
-    [./couple-9-3.jpg],
-    [./cake-min-3.jpg, ./dress-min-3.jpg],
+    [./polo-portrait.webp, ./bts-drama.webp],
+    [./bts-crew.webp, ./bts-cam-op.webp, ./polo-portrait.webp],
+    [./bts-drama.webp],
+    [./bts-crew.webp, ./bts-cam-op.webp],
   ]
 order: 3
 clients: []
