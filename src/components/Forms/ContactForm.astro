@@ -12,8 +12,22 @@ const WA_DEFAULT_MSG =
 	<div class="cf-toggle" role="tablist" aria-label="Choose how to get in touch">
 		<button
 			role="tab"
-			id="tab-email"
+			id="tab-whatsapp"
 			aria-selected="true"
+			aria-controls="panel-whatsapp"
+			class="cf-tab"
+		>
+			<svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+				<path
+					d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.38 1.26 4.8L2 22l5.44-1.37a9.84 9.84 0 0 0 4.6 1.14c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 1.8c4.46 0 8.1 3.64 8.1 8.1s-3.64 8.1-8.1 8.1a8.1 8.1 0 0 1-4.1-1.12l-.29-.18-3.02.76.8-2.92-.2-.3a8.06 8.06 0 0 1-1.28-4.34c0-4.46 3.63-8.1 8.09-8.1zm-2.7 4.5c-.2 0-.5.07-.77.38-.27.3-1 .97-1 2.36s1.02 2.74 1.16 2.93c.14.18 1.97 3.13 4.85 4.27 2.39.96 2.88.77 3.4.72.52-.04 1.67-.68 1.9-1.34.24-.66.24-1.22.17-1.34-.07-.12-.26-.18-.55-.32-.29-.14-1.67-.82-1.93-.91-.26-.1-.45-.14-.64.14-.19.28-.73.91-.9 1.1-.17.18-.34.2-.63.07-.29-.14-1.23-.45-2.34-1.44-.86-.77-1.44-1.72-1.61-2.01-.17-.29-.02-.44.13-.59.13-.13.29-.34.43-.51.14-.17.19-.29.29-.48.1-.19.05-.36-.02-.5-.07-.14-.62-1.5-.85-2.06-.22-.53-.45-.46-.62-.47-.16-.01-.35-.01-.54-.01z"
+				></path>
+			</svg>
+			WhatsApp
+		</button>
+		<button
+			role="tab"
+			id="tab-email"
+			aria-selected="false"
 			aria-controls="panel-email"
 			class="cf-tab"
 		>
@@ -30,24 +44,63 @@ const WA_DEFAULT_MSG =
 			</svg>
 			Email Inquiry
 		</button>
-		<button
-			role="tab"
-			id="tab-whatsapp"
-			aria-selected="false"
-			aria-controls="panel-whatsapp"
-			class="cf-tab"
-		>
-			<svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-				<path
-					d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.38 1.26 4.8L2 22l5.44-1.37a9.84 9.84 0 0 0 4.6 1.14c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 1.8c4.46 0 8.1 3.64 8.1 8.1s-3.64 8.1-8.1 8.1a8.1 8.1 0 0 1-4.1-1.12l-.29-.18-3.02.76.8-2.92-.2-.3a8.06 8.06 0 0 1-1.28-4.34c0-4.46 3.63-8.1 8.09-8.1zm-2.7 4.5c-.2 0-.5.07-.77.38-.27.3-1 .97-1 2.36s1.02 2.74 1.16 2.93c.14.18 1.97 3.13 4.85 4.27 2.39.96 2.88.77 3.4.72.52-.04 1.67-.68 1.9-1.34.24-.66.24-1.22.17-1.34-.07-.12-.26-.18-.55-.32-.29-.14-1.67-.82-1.93-.91-.26-.1-.45-.14-.64.14-.19.28-.73.91-.9 1.1-.17.18-.34.2-.63.07-.29-.14-1.23-.45-2.34-1.44-.86-.77-1.44-1.72-1.61-2.01-.17-.29-.02-.44.13-.59.13-.13.29-.34.43-.51.14-.17.19-.29.29-.48.1-.19.05-.36-.02-.5-.07-.14-.62-1.5-.85-2.06-.22-.53-.45-.46-.62-.47-.16-.01-.35-.01-.54-.01z"
-				></path>
-			</svg>
-			WhatsApp
-		</button>
+	</div>
+
+	<!-- ── WhatsApp panel ─────────────────────── -->
+	<div
+		id="panel-whatsapp"
+		role="tabpanel"
+		aria-labelledby="tab-whatsapp"
+		class="cf-panel"
+	>
+		<div class="flex flex-col gap-4">
+			<p class="text-sm leading-relaxed opacity-55">
+				Type a message below and tap the button — WhatsApp opens with it pre-filled. You can still
+				edit before sending.
+			</p>
+
+			<div class="cf-field">
+				<label for="wa-message" class="font-heading-1 text-lg uppercase">Message</label>
+				<textarea class="form__input" id="wa-message" rows="6">{WA_DEFAULT_MSG}</textarea>
+			</div>
+
+			<p class="cf-wa-helper">
+				<svg
+					class="cf-wa-helper__icon"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.75"
+					aria-hidden="true"
+				>
+					<circle cx="12" cy="12" r="9"></circle>
+					<path stroke-linecap="round" d="M12 8v.5m0 2.5v4.5"></path>
+				</svg>
+				Opens WhatsApp in a new tab. Your message is pre-filled — you decide what to send.
+			</p>
+
+			<div class="flex">
+				<a
+					id="wa-cta"
+					href={`https://wa.me/${PAUL_WHATSAPP_NUMBER}?text=${encodeURIComponent(WA_DEFAULT_MSG)}`}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="cf-wa-btn flex w-full items-center justify-center gap-2 md:w-fit"
+					data-phone={PAUL_WHATSAPP_NUMBER}
+				>
+					<svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+						<path
+							d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.38 1.26 4.8L2 22l5.44-1.37a9.84 9.84 0 0 0 4.6 1.14c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 1.8c4.46 0 8.1 3.64 8.1 8.1s-3.64 8.1-8.1 8.1a8.1 8.1 0 0 1-4.1-1.12l-.29-.18-3.02.76.8-2.92-.2-.3a8.06 8.06 0 0 1-1.28-4.34c0-4.46 3.63-8.1 8.09-8.1zm-2.7 4.5c-.2 0-.5.07-.77.38-.27.3-1 .97-1 2.36s1.02 2.74 1.16 2.93c.14.18 1.97 3.13 4.85 4.27 2.39.96 2.88.77 3.4.72.52-.04 1.67-.68 1.9-1.34.24-.66.24-1.22.17-1.34-.07-.12-.26-.18-.55-.32-.29-.14-1.67-.82-1.93-.91-.26-.1-.45-.14-.64.14-.19.28-.73.91-.9 1.1-.17.18-.34.2-.63.07-.29-.14-1.23-.45-2.34-1.44-.86-.77-1.44-1.72-1.61-2.01-.17-.29-.02-.44.13-.59.13-.13.29-.34.43-.51.14-.17.19-.29.29-.48.1-.19.05-.36-.02-.5-.07-.14-.62-1.5-.85-2.06-.22-.53-.45-.46-.62-.47-.16-.01-.35-.01-.54-.01z"
+						></path>
+					</svg>
+					Chat on WhatsApp
+				</a>
+			</div>
+		</div>
 	</div>
 
 	<!-- ── Email panel ─────────────────────────── -->
-	<div id="panel-email" role="tabpanel" aria-labelledby="tab-email" class="cf-panel">
+	<div id="panel-email" role="tabpanel" aria-labelledby="tab-email" class="cf-panel hidden">
 		<form id="contact-form" name="contact form" class="flex flex-col gap-4" novalidate>
 			<input type="hidden" name="form-name" value="contact" />
 
@@ -147,59 +200,6 @@ const WA_DEFAULT_MSG =
 				</button>
 			</div>
 		</form>
-	</div>
-
-	<!-- ── WhatsApp panel ─────────────────────── -->
-	<div
-		id="panel-whatsapp"
-		role="tabpanel"
-		aria-labelledby="tab-whatsapp"
-		class="cf-panel hidden"
-	>
-		<div class="flex flex-col gap-4">
-			<p class="text-sm leading-relaxed opacity-55">
-				Type a message below and tap the button — WhatsApp opens with it pre-filled. You can still
-				edit before sending.
-			</p>
-
-			<div class="cf-field">
-				<label for="wa-message" class="font-heading-1 text-lg uppercase">Message</label>
-				<textarea class="form__input" id="wa-message" rows="6">{WA_DEFAULT_MSG}</textarea>
-			</div>
-
-			<p class="cf-wa-helper">
-				<svg
-					class="cf-wa-helper__icon"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="1.75"
-					aria-hidden="true"
-				>
-					<circle cx="12" cy="12" r="9"></circle>
-					<path stroke-linecap="round" d="M12 8v.5m0 2.5v4.5"></path>
-				</svg>
-				Opens WhatsApp in a new tab. Your message is pre-filled — you decide what to send.
-			</p>
-
-			<div class="flex">
-				<a
-					id="wa-cta"
-					href={`https://wa.me/${PAUL_WHATSAPP_NUMBER}?text=${encodeURIComponent(WA_DEFAULT_MSG)}`}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="cf-wa-btn flex w-full items-center justify-center gap-2 md:w-fit"
-					data-phone={PAUL_WHATSAPP_NUMBER}
-				>
-					<svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-						<path
-							d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.38 1.26 4.8L2 22l5.44-1.37a9.84 9.84 0 0 0 4.6 1.14c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 1.8c4.46 0 8.1 3.64 8.1 8.1s-3.64 8.1-8.1 8.1a8.1 8.1 0 0 1-4.1-1.12l-.29-.18-3.02.76.8-2.92-.2-.3a8.06 8.06 0 0 1-1.28-4.34c0-4.46 3.63-8.1 8.09-8.1zm-2.7 4.5c-.2 0-.5.07-.77.38-.27.3-1 .97-1 2.36s1.02 2.74 1.16 2.93c.14.18 1.97 3.13 4.85 4.27 2.39.96 2.88.77 3.4.72.52-.04 1.67-.68 1.9-1.34.24-.66.24-1.22.17-1.34-.07-.12-.26-.18-.55-.32-.29-.14-1.67-.82-1.93-.91-.26-.1-.45-.14-.64.14-.19.28-.73.91-.9 1.1-.17.18-.34.2-.63.07-.29-.14-1.23-.45-2.34-1.44-.86-.77-1.44-1.72-1.61-2.01-.17-.29-.02-.44.13-.59.13-.13.29-.34.43-.51.14-.17.19-.29.29-.48.1-.19.05-.36-.02-.5-.07-.14-.62-1.5-.85-2.06-.22-.53-.45-.46-.62-.47-.16-.01-.35-.01-.54-.01z"
-						></path>
-					</svg>
-					Chat on WhatsApp
-				</a>
-			</div>
-		</div>
 	</div>
 </div>
 
