@@ -58,8 +58,43 @@ const today = new Date();
 			&copy; {today.getFullYear()}
 			{siteData.name}. All rights reserved.
 		</div>
-		<div class="mb-2 text-center text-xs opacity-40 tracking-wide">
-			Developed by Kibuthi Muikia
+
+		<!-- developer credit with social links -->
+		<div class="mb-1 flex items-center justify-center gap-2 text-xs opacity-40 tracking-wide transition-opacity duration-300 hover:opacity-60">
+			<span>Developed by Kibuthi Muikia</span>
+			<span class="text-base-400 select-none" aria-hidden="true">·</span>
+			<div class="flex items-center gap-1.5">
+				<a
+					href="https://github.com/kibmuikia"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="transition-opacity duration-200 hover:opacity-80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary-300"
+					aria-label="Kibuthi Muikia on GitHub"
+				>
+					<Icon name="socials/mdi-github" class="size-3.5" />
+				</a>
+				<a
+					href="https://www.linkedin.com/in/muikia-allan/"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="transition-opacity duration-200 hover:opacity-80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary-300"
+					aria-label="Kibuthi Muikia on LinkedIn"
+				>
+					<Icon name="socials/mdi-linkedin" class="size-3.5" />
+				</a>
+			</div>
+		</div>
+
+		<!-- theme attribution -->
+		<div class="mb-2 text-center text-xs opacity-20 tracking-widest transition-opacity duration-300 hover:opacity-40">
+			<a
+				href="https://cosmicthemes.com/themes/horizon/"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="uppercase transition-opacity duration-200 hover:opacity-80"
+			>
+				Built on Horizon
+			</a>
 		</div>
 	</div>
 </footer>
