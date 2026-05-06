@@ -1,0 +1,57 @@
+---
+// src/components/Icon.astro
+// Hand-picked tabler icon paths. Add more as needed from https://tabler.io/icons
+// Each value is the `d` attribute of the icon's SVG path(s), viewBox is always 0 0 24 24
+
+interface Props {
+  name: string;
+  class?: string;
+  size?: number;
+  "aria-hidden"?: boolean | "true" | "false";
+  "aria-label"?: string;
+}
+
+const ICONS: Record<string, string> = {
+  // source: https://tabler.io/icons
+  "bulb":             "M9 2a7 7 0 0 1 5.67 11.1A5 5 0 0 1 14 16H10a5 5 0 0 1-.67-2.9A7 7 0 0 1 9 2zM10 22v-2M14 22v-2M9 16h6",
+  "alert-triangle":   "M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01",
+  "flame":            "M12 12c0-3 2.5-4 4-6 1 2 2 4 2 6a6 6 0 1 1-12 0c0-2 1-4 2-6 1.5 2 4 3 4 6z",
+  "info-circle":      "M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 5v1m0 4v5",
+  "arrow-narrow-left":"M5 12h14M5 12l4-4M5 12l4 4",
+  "arrow-narrow-right":"M19 12H5M19 12l-4-4M19 12l-4 4",
+  "menu-2":           "M4 6h16M4 12h16M4 18h16",
+  "x":                "M18 6 6 18M6 6l12 12",
+  "chevron-down":     "M6 9l6 6 6-6",
+  "category":         "M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM17 17m-3 0a3 3 0 1 0 6 0 3 3 0 1 0-6 0",
+  "calendar-event":   "M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5zm0 5h16M16 3v4M8 3v4m4 7h.01",
+};
+
+const {
+  name,
+  class: className,
+  size = 24,
+  "aria-hidden": ariaHidden,
+  "aria-label": ariaLabel,
+} = Astro.props;
+
+const path = ICONS[name];
+if (!path) {
+  throw new Error(`[Icon] Unknown icon: "${name}". Add it to src/components/Icon.astro.`);
+}
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  aria-hidden={ariaHidden}
+  aria-label={ariaLabel}
+  set:html={path.split("M").filter(Boolean).map(d => `<path d="M${d}" />`).join("")}
+/>
