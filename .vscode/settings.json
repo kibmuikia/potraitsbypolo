@@ -1,5 +1,13 @@
 {
-	"cSpell.words": ["iconify", "playform", "portraitsbypolo", "potraitsbypolo", "tabler", "workerd"],
+	"cSpell.words": [
+		"favicons",
+		"iconify",
+		"playform",
+		"portraitsbypolo",
+		"potraitsbypolo",
+		"tabler",
+		"workerd"
+	],
 	"workbench.colorCustomizations": {
 		"activityBar.activeBackground": "#fbcbfa",
 		"activityBar.background": "#fbcbfa",

@@ -1,12 +1,14 @@
 {
 	"name": "Portraits by Polo",
 	"short_name": "PBP",
+	"description": "Film camera operator and lighting technician based in Nairobi. Scripted series, branded content, and portrait sessions — six years across Showmax Originals, major FMCG brands, and editorial clients.",
+	"id": "/",
 	"icons": [
 		{
 			"src": "/favicons/web-app-manifest-192x192.png",
 			"sizes": "192x192",
 			"type": "image/png",
-			"purpose": "maskable"
+			"purpose": "any"
 		},
 		{
 			"src": "/favicons/web-app-manifest-512x512.png",
@@ -17,5 +19,30 @@
 	],
 	"theme_color": "#1A1A1A",
 	"background_color": "#1A1A1A",
-	"display": "standalone"
+	"display": "standalone",
+	"display_override": ["window-controls-overlay", "standalone"],
+	"orientation": "portrait-primary",
+	"scope": "/",
+	"start_url": "/",
+	"launch_handler": {
+		"client_mode": "navigate-existing"
+	},
+	"categories": ["lifestyle", "productivity", "art", "photography", "portfolio"],
+	"screenshots": [
+		{
+			"src": "/images/pwa-screenshot-narrow.png",
+			"type": "image/png",
+			"sizes": "1006x2050",
+			"form_factor": "narrow",
+			"label": "Portfolio — mobile"
+		},
+		{
+			"src": "/images/pwa-screenshot-wide.png",
+			"type": "image/png",
+			"sizes": "3024x1654",
+			"form_factor": "wide",
+			"label": "Portfolio — desktop"
+		}
+	],
+	"prefer_related_applications": false
 }
