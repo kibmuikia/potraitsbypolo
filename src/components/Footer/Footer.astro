@@ -1,8 +1,10 @@
 ---
-import SiteLogo from "@components/SiteLogo/SiteLogo.astro";
-import siteData from "@config/siteData.json";
 import { Icon } from "astro-icon/components";
 
+import SiteLogo from "@components/SiteLogo/SiteLogo.astro";
+import siteData from "@config/siteData.json";
+
+import { version } from "../../../package.json";
 import FooterLink from "./FooterLink.astro";
 
 const today = new Date();
@@ -51,6 +53,15 @@ const today = new Date();
 				<Icon name="socials/mdi-youtube" class="size-6 transition hover:opacity-80" />
 				<span class="sr-only">Youtube</span>
 			</a>
+		</div>
+
+		<!-- version -->
+		<div class="mt-5 flex justify-center">
+			<div class="group flex cursor-default items-center gap-2 opacity-20 transition-opacity duration-500 hover:opacity-45">
+				<div class="h-px w-8 bg-current transition-all duration-500 group-hover:w-12"></div>
+				<span class="text-xs tracking-[0.25em] uppercase">v{version}</span>
+				<div class="h-px w-8 bg-current transition-all duration-500 group-hover:w-12"></div>
+			</div>
 		</div>
 
 		<!-- copyright -->
