@@ -6,10 +6,10 @@ date: "Dec 1 2022"
 location: Nairobi, Kenya
 images:
   [
-    [./couple-2-min-2.jpg, ./couple-2-min-2.jpg],
-    [./rings-wood-min-2.jpg, ./seals-min-2.jpg, ./rings-wood-min-2.jpg],
-    [./couple-9-2.jpg],
-    [./cake-min-2.jpg, ./dress-min-2.jpg],
+    [./hero-commercials.webp, ./bts-crew.webp],
+    [./bts-cam-op.webp, ./bts-gimbal.webp, ./hero-commercials.webp],
+    [./bts-crew.webp],
+    [./bts-cam-op.webp, ./bts-gimbal.webp],
   ]
 order: 2
 clients: []

@@ -6,10 +6,10 @@ date: "Jan 1 2024"
 location: Nairobi, Kenya
 images:
   [
-    [./couple-2-min-1.jpg, ./couple-2-min-1.jpg],
-    [./rings-wood-min-1.jpg, ./seals-min-1.jpg, ./rings-wood-min-1.jpg],
-    [./couple-9-1.jpg],
-    [./cake-min-1.jpg, ./dress-min-1.jpg],
+    [./hero-scripted.webp, ./bts-crew.webp],
+    [./bts-drama.webp, ./bts-gimbal.webp, ./hero-scripted.webp],
+    [./bts-crew.webp],
+    [./bts-drama.webp, ./bts-gimbal.webp],
   ]
 order: 1
 clients: []
