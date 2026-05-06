@@ -1,7 +1,7 @@
 ---
 // ⚠️  Set Paul's WhatsApp number — international format, digits only (no + or spaces)
 // Example: +254 712 345 678 → "254712345678"
-const PAUL_WHATSAPP_NUMBER = "";
+const PAUL_WHATSAPP_NUMBER = import.meta.env.PAUL_WHATSAPP_NUMBER ?? "";
 
 const WA_DEFAULT_MSG =
 	"Hi Paul, I found you on your website and I'd love to discuss a portrait session.";
@@ -617,7 +617,7 @@ const WA_DEFAULT_MSG =
 		let allValid = true;
 		form
 			.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
-				"input:not([type=hidden]), textarea",
+				"input:not([type=hidden]), textarea"
 			)
 			.forEach((input) => {
 				validateField(input);
