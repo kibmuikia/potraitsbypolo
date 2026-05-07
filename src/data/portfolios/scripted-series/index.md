@@ -1,15 +1,15 @@
 ---
 title: Scripted Series
 description: Camera operation and key grip work across Showmax Originals and primetime Kenyan television.
-heroImage: ./hero-scripted.webp
+heroImage: ./hero-portraits.jpg
 date: "Jan 1 2024"
 location: Nairobi, Kenya
 images:
   [
-    [./hero-scripted.webp, ./bts-crew.webp],
-    [./bts-drama.webp, ./bts-gimbal.webp, ./hero-scripted.webp],
-    [./bts-crew.webp],
-    [./bts-drama.webp, ./bts-gimbal.webp],
+    [./1.jpg, ./2.jpg],
+    [./3.jpg, ./4.jpg, ./5.jpg],
+    [./6.jpeg],
+    [./1.jpg, ./2.jpg],
   ]
 order: 1
 clients: []
