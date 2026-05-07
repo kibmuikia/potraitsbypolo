@@ -1,0 +1,71 @@
+---
+import Icon from "@components/Icon/Icon.astro";
+---
+
+<button
+	id="theme-toggle"
+	data-theme="system"
+	aria-label="Switch to light mode"
+	title="Switch to light mode"
+	class="primary-focus flex h-10 w-10 items-center justify-center rounded-none"
+>
+	<span data-icon="light"><Icon name="sun" size={22} aria-hidden="true" /></span>
+	<span data-icon="dark"><Icon name="moon" size={22} aria-hidden="true" /></span>
+	<span data-icon="system"><Icon name="monitor" size={22} aria-hidden="true" /></span>
+</button>
+
+<script>
+	type Theme = "light" | "dark" | "system";
+
+	const CYCLE: Theme[] = ["light", "dark", "system"];
+	const NEXT_LABEL: Record<Theme, string> = {
+		light: "Switch to dark mode",
+		dark: "Switch to system mode",
+		system: "Switch to light mode",
+	};
+
+	function getStored(): Theme {
+		return (localStorage.getItem("theme") as Theme) ?? "system";
+	}
+
+	function applyTheme(theme: Theme): void {
+		const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+		const isDark = theme === "dark" || (theme === "system" && prefersDark);
+		document.documentElement.classList.toggle("dark", isDark);
+		localStorage.setItem("theme", theme);
+	}
+
+	function syncButton(btn: HTMLElement, theme: Theme): void {
+		btn.setAttribute("data-theme", theme);
+		const next = CYCLE[(CYCLE.indexOf(theme) + 1) % CYCLE.length];
+		btn.setAttribute("aria-label", NEXT_LABEL[next]);
+		btn.setAttribute("title", NEXT_LABEL[next]);
+	}
+
+	function init(): void {
+		const btn = document.getElementById("theme-toggle") as HTMLElement | null;
+		if (!btn) return;
+		const theme = getStored();
+		applyTheme(theme);
+		syncButton(btn, theme);
+		btn.addEventListener("click", () => {
+			const next = CYCLE[(CYCLE.indexOf(getStored()) + 1) % CYCLE.length];
+			applyTheme(next);
+			syncButton(btn, next);
+		});
+	}
+
+	init();
+	document.addEventListener("astro:after-swap", init);
+</script>
+
+<style>
+	#theme-toggle [data-icon] {
+		display: none;
+	}
+	#theme-toggle[data-theme="light"] [data-icon="light"],
+	#theme-toggle[data-theme="dark"] [data-icon="dark"],
+	#theme-toggle[data-theme="system"] [data-icon="system"] {
+		display: flex;
+	}
+</style>

@@ -21,6 +21,17 @@ import WorkSansVariable from "@fontsource-variable/work-sans/files/work-sans-lat
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width" initial-scale="1.0" />
+<meta name="color-scheme" content="light dark" />
+
+<!-- FOUC prevention: apply .dark before first paint -->
+<script is:inline>
+	(function () {
+		var t = localStorage.getItem("theme");
+		var sys = window.matchMedia("(prefers-color-scheme: dark)").matches;
+		if (t === "dark" || (t === "system" && sys) || (!t && sys))
+			document.documentElement.classList.add("dark");
+	})();
+</script>
 
 <!-- local font preload for better performance when not using ClientRouter -->
 <link rel="preload" href={WorkSansVariable} as="font" type="font/woff2" crossorigin="anonymous" />

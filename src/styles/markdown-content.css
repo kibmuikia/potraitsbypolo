@@ -54,7 +54,7 @@
 
 /* anchor tags */
 .markdown-content a:not(:where(.not-content *)) {
-	@apply text-primary-700 hover:text-primary-800 underline transition-colors;
+	@apply text-primary-700 hover:text-primary-800 dark:text-primary-300 dark:hover:text-primary-200 underline transition-colors;
 }
 
 /* code */
