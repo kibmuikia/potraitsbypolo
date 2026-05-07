@@ -6,10 +6,10 @@ date: "Jan 1 2024"
 location: Nairobi, Kenya
 images:
   [
-    [./1.jpg, ./2.jpg],
-    [./3.jpg, ./4.jpg, ./5.jpg],
-    [./6.jpeg],
-    [./7.webp, ./2.jpg],
+    [./sc_1.jpg, ./sc_2.jpg],
+    [./sc_3.jpg, ./sc_4.jpg, ./sc_5.jpg],
+    [./sc_6.jpeg],
+    [./sc_7.webp, ./sc_2.jpg],
   ]
 order: 1
 clients: []

@@ -1,15 +1,15 @@
 ---
 title: Feature Films & Portraits
 description: Big-screen credits and personal portrait photography — the full range of the lens.
-heroImage: ./4.jpg
+heroImage: ./ft_4.jpg
 date: "Jun 1 2022"
 location: Nairobi, Kenya
 images:
   [
-    [./1.jpg, ./2.jpg],
-    [./3.jpg, ./4.jpg, ./5.jpg],
-    [./6.jpg],
-    [./7.jpg, ./1.jpg],
+    [./ft_1.jpg, ./ft_2.jpg],
+    [./ft_3.jpg, ./ft_4.jpg, ./ft_5.jpg],
+    [./ft_6.jpg],
+    [./ft_7.jpg, ./ft_1.jpg],
   ]
 order: 3
 clients: []
