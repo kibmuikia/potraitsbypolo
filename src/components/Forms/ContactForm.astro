@@ -256,6 +256,11 @@ const WA_DEFAULT_MSG =
 		background-color: color-mix(in oklab, var(--color-base-950) 85%, transparent);
 	}
 
+	/* base-950 inverts to near-white in dark mode — use base-200 instead */
+	:global(.dark) .cf-toggle {
+		background-color: color-mix(in oklab, var(--color-base-200) 85%, transparent);
+	}
+
 	.cf-tab {
 		flex: 1;
 		display: flex;
