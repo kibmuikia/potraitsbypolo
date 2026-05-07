@@ -15,4 +15,4 @@ order: 3
 clients: []
 ---
 
-Feature and short film credits include Baba Twins (Moon Beam Productions), Brikicho (Short Cloud Entertainment), Jua Kali (Wheelbarrow Films), and Ayaanle. Under the Portraits by Polo name, I also shoot personal portrait sessions — capturing character, light, and authentic expression.
+Feature and short film credits include Baba Twins (Moon Beam Productions), Brikicho (Short Cloud Entertainment), Jua Kali (Wheelbarrow Films), and Ayaanle. Under the Portraits by Polo name, I also shoot personal portrait sessions — capturing character, light, and authentic expression. 
