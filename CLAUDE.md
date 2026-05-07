@@ -1,4 +1,4 @@
-# Guideline
+# Guidelines
 
 - logs/documentations/plans etc are kept in folder `./docs/`.
 - Design system reference (tokens, typography, colors, components, modes): `./docs/design-system.md` — versioned 2026-05-05T19:43:37+03:00 - compact version in `docs/portraitsbypolo_design_system.md`.
