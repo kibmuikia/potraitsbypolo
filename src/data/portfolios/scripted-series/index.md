@@ -9,7 +9,7 @@ images:
     [./1.jpg, ./2.jpg],
     [./3.jpg, ./4.jpg, ./5.jpg],
     [./6.jpeg],
-    [./1.jpg, ./2.jpg],
+    [./7.webp, ./2.jpg],
   ]
 order: 1
 clients: []
