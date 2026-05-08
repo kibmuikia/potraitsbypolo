@@ -5,6 +5,10 @@ import { getCollection } from "astro:content";
 const testimonials = await getCollection("testimonials");
 
 const sortedTestimonials = testimonials.sort((a, b) => a.data.order - b.data.order);
+
+const count = sortedTestimonials.length;
+// When count leaves a single orphan in the last row of a 3-col grid, centre it
+const orphanIndex = count % 3 === 1 ? count - 1 : -1;
 ---
 
 <section id="testimonial" class="site-container scroll-mt-10 py-8 md:py-12">
@@ -13,7 +17,9 @@ const sortedTestimonials = testimonials.sort((a, b) => a.data.order - b.data.ord
 	</div>
 	<div class="mx-auto grid max-w-md gap-20 pt-8 md:max-w-none md:grid-cols-2 md:pt-12 lg:grid-cols-3">
 		{sortedTestimonials.map((testimonial, i) => (
-			<TestimonialCard testimonial={testimonial} imagePosition={i % 2 === 0 ? "top" : "bottom"} />
+			<div class:list={[{ "md:col-span-2 md:mx-auto md:w-1/2 lg:col-span-1 lg:col-start-2 lg:mx-0 lg:w-auto": i === orphanIndex }]}>
+				<TestimonialCard testimonial={testimonial} imagePosition={i % 2 === 0 ? "top" : "bottom"} />
+			</div>
 		))}
 	</div>
 </section>
