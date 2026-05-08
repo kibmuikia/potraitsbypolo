@@ -1,6 +1,7 @@
 ---
 /**
- * * Testimonial cards where the image can be either on top or bottom
+ * Testimonial card — circular avatar variant with scroll-reveal support.
+ * Receives `--stagger-i` via inline style from parent for staggered entrance.
  */
 
 import { Image } from "astro:assets";
@@ -9,68 +10,189 @@ import { Icon } from "astro-icon/components";
 
 interface Props {
 	testimonial: CollectionEntry<"testimonials">;
-	imagePosition?: "top" | "bottom";
+	/** Stagger index injected by parent as CSS custom property */
+	index?: number;
 }
 
-const { testimonial, imagePosition = "top" } = Astro.props as Props;
+const { testimonial, index = 0 } = Astro.props as Props;
 const { title, company, linkedin, testimonial: testimonialText, image } = testimonial.data;
 ---
 
-<div class="grid gap-1 lg:auto-rows-fr">
-	<div
-		class:list={[
-			"aspect-[3/4] overflow-hidden",
-			{
-				"lg:order-2": imagePosition === "bottom",
-			},
-		]}
-	>
-		<Image
-			src={image}
-			alt={title}
-			width={450}
-			densities={[1.5, 2]}
-			class="h-auto min-h-full w-full min-w-full object-cover"
-		/>
-	</div>
-	<div
-		class=""
-		class:list={[
-			"mt-4 text-center",
-			{
-				"lg:mt-0": imagePosition === "bottom",
-			},
-			{
-				"lg:mt-10": imagePosition === "top",
-			},
-		]}
-	>
-		<div class="flex flex-col items-center">
-			<Icon name="gridicons/quote" class="text-primary-200 size-14" aria-hidden="true" />
-			<hr class="border-primary-400 mt-4 mb-6 w-1/2 border-1" />
+<article
+	class="testimonial-card"
+	style={`--i: ${index};`}
+	aria-label={`Testimonial from ${title}`}
+>
+	<!-- Quote mark — decorative -->
+	<span class="quote-mark" aria-hidden="true">&ldquo;</span>
+
+	<!-- Body text first so avatar anchors the attribution below -->
+	<p class="testimonial-text">{testimonialText}</p>
+
+	<!-- Avatar + attribution row -->
+	<footer class="testimonial-footer">
+		<div class="avatar-wrap">
+			<Image
+				src={image}
+				alt={`Portrait of ${title}`}
+				width={80}
+				densities={[1.5, 2]}
+				class="avatar-img"
+			/>
 		</div>
 
-		<div class="flex items-center justify-center gap-2">
-			<h3 class="h3 tracking-widest">{title}</h3>
-			{linkedin && (
-				<a
-					href={linkedin}
-					target="_blank"
-					rel="noopener noreferrer"
-					aria-label={`Visit ${title}'s LinkedIn profile`}
-					class="group/link text-base-700 transition-colors duration-200 hover:text-base-900 focus-visible:text-base-900"
-				>
-					<Icon
-						name="socials/mdi-linkedin"
-						aria-hidden="true"
-						class="size-4 opacity-55 transition-all duration-180 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/link:-translate-y-px group-hover/link:scale-105 group-hover/link:opacity-100"
-					/>
-				</a>
+		<div class="attribution">
+			<div class="name-row">
+				<span class="name">{title}</span>
+				{linkedin && (
+					<a
+						href={linkedin}
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label={`${title} on LinkedIn`}
+						class="linkedin-link"
+					>
+						<Icon
+							name="socials/mdi-linkedin"
+							aria-hidden="true"
+							class="linkedin-icon"
+						/>
+					</a>
+				)}
+			</div>
+			{company && (
+				<p class="company">{company}</p>
 			)}
 		</div>
-		{company && (
-			<p class="mt-1 text-xs uppercase tracking-[0.2em] text-base-700">{company}</p>
-		)}
-		<p class="mt-6 text-pretty lg:text-lg">{testimonialText}</p>
-	</div>
-</div>
+	</footer>
+</article>
+
+<style>
+	.testimonial-card {
+		/* Layout */
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		padding: 2rem 1.75rem 1.75rem;
+
+		/* Surface */
+		background: color-mix(in oklch, var(--color-base-900, #0a0a0a) 80%, transparent);
+		border: 1px solid color-mix(in oklch, white 8%, transparent);
+		border-radius: 1.25rem;
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+
+		/* Scroll-reveal: hidden by default, JS adds .is-visible */
+		opacity: 0;
+		translate: 0 2rem;
+		transition:
+			opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 120ms),
+			translate 0.55s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 120ms);
+
+		/* Hover lift */
+		&:hover {
+			border-color: color-mix(in oklch, var(--color-primary-400, #c9a96e) 30%, transparent);
+			translate: 0 -3px;
+			transition:
+				opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 120ms),
+				translate 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+				border-color 0.3s ease;
+		}
+
+		&.is-visible {
+			opacity: 1;
+			translate: 0 0;
+		}
+	}
+
+	.quote-mark {
+		font-size: 3.5rem;
+		line-height: 1;
+		color: var(--color-primary-300, #d4b483);
+		opacity: 0.5;
+		font-family: Georgia, serif;
+		user-select: none;
+		display: block;
+		margin-bottom: -0.75rem; /* tighten gap to text */
+	}
+
+	.testimonial-text {
+		font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+		line-height: 1.7;
+		color: color-mix(in oklch, white 80%, transparent);
+		flex: 1;
+		text-pretty: auto;
+	}
+
+	.testimonial-footer {
+		display: flex;
+		align-items: center;
+		gap: 0.875rem;
+		padding-top: 1rem;
+		border-top: 1px solid color-mix(in oklch, white 6%, transparent);
+		margin-top: auto;
+	}
+
+	/* Circular avatar */
+	.avatar-wrap {
+		flex-shrink: 0;
+		width: 3rem;
+		height: 3rem;
+		border-radius: 50%;
+		overflow: hidden;
+		border: 2px solid color-mix(in oklch, var(--color-primary-400, #c9a96e) 50%, transparent);
+		box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary-400, #c9a96e) 12%, transparent);
+	}
+
+	.avatar-img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center top;
+	}
+
+	.attribution {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
+	}
+
+	.name-row {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+	}
+
+	.name {
+		font-size: 0.8rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: white;
+	}
+
+	.linkedin-link {
+		color: color-mix(in oklch, white 45%, transparent);
+		transition: color 0.2s ease, translate 0.2s ease;
+		line-height: 0;
+
+		&:hover,
+		&:focus-visible {
+			color: white;
+			translate: 0 -1px;
+			outline: none;
+		}
+	}
+
+	.linkedin-icon {
+		width: 0.9rem;
+		height: 0.9rem;
+	}
+
+	.company {
+		font-size: 0.7rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: color-mix(in oklch, white 40%, transparent);
+	}
+</style>
