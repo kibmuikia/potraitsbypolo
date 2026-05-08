@@ -40,6 +40,8 @@ const testimonials = defineCollection({
 	schema: ({ image }) =>
 		z.object({
 			title: z.string(),
+			company: z.string().optional(),
+			linkedin: z.string().optional(),
 			testimonial: z.string(),
 			image: image(),
 			order: z.number(),

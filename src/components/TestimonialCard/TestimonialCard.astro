@@ -13,7 +13,7 @@ interface Props {
 }
 
 const { testimonial, imagePosition = "top" } = Astro.props as Props;
-const { title, testimonial: testimonialText, image } = testimonial.data;
+const { title, company, linkedin, testimonial: testimonialText, image } = testimonial.data;
 ---
 
 <div class="grid gap-1 lg:auto-rows-fr">
@@ -50,7 +50,27 @@ const { title, testimonial: testimonialText, image } = testimonial.data;
 			<hr class="border-primary-400 mt-4 mb-6 w-1/2 border-1" />
 		</div>
 
-		<h3 class="h3 tracking-widest">{title}</h3>
+		<div class="flex items-center justify-center gap-2">
+			<h3 class="h3 tracking-widest">{title}</h3>
+			{linkedin && (
+				<a
+					href={linkedin}
+					target="_blank"
+					rel="noopener noreferrer"
+					aria-label={`Visit ${title}'s LinkedIn profile`}
+					class="group/link text-base-700 transition-colors duration-200 hover:text-base-900 focus-visible:text-base-900"
+				>
+					<Icon
+						name="socials/mdi-linkedin"
+						aria-hidden="true"
+						class="size-4 opacity-55 transition-all duration-180 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/link:-translate-y-px group-hover/link:scale-105 group-hover/link:opacity-100"
+					/>
+				</a>
+			)}
+		</div>
+		{company && (
+			<p class="mt-1 text-xs uppercase tracking-[0.2em] text-base-700">{company}</p>
+		)}
 		<p class="mt-6 text-pretty lg:text-lg">{testimonialText}</p>
 	</div>
 </div>
