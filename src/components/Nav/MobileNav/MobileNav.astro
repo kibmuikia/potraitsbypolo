@@ -1,8 +1,9 @@
 ---
+import { Icon } from "astro-icon/components";
 import MobileNavDropdown from "@components/Nav/MobileNav/MobileNavDropdown.astro";
 import NavLink from "@components/Nav/NavLink.astro";
 import navData from "@config/navData.json";
-import { Icon } from "astro-icon/components";
+import { version } from "../../../../package.json";
 ---
 
 <div id="mobile-nav__container">
@@ -22,7 +23,7 @@ import { Icon } from "astro-icon/components";
 	</button>
 	<div
 		id="mobile-nav__content"
-		class="whitepace-nowrap bg-base-50 text-base-900 fixed top-0 -right-72 z-20 hidden h-screen w-72 items-center overflow-x-hidden text-lg font-normal transition-all duration-300"
+		class="whitepace-nowrap bg-base-50 text-base-900 fixed top-0 -right-72 z-20 hidden h-screen w-72 flex flex-col overflow-x-hidden text-lg font-normal transition-all duration-300"
 	>
 		<div class="w-full px-2">
 			<div class="mx-1 my-2 flex w-full justify-end pr-4 pl-6">
@@ -50,6 +51,74 @@ import { Icon } from "astro-icon/components";
 					}
 				</ul>
 			</nav>
+		</div>
+
+		<!-- nav footer -->
+		<div class="mobile-nav__footer border-base-200 mt-auto w-full border-t px-5 py-5">
+			<!-- portraitsbypolo socials -->
+			<div class="mb-4 flex flex-col gap-2">
+				<span class="text-base-500 text-[0.62rem] uppercase tracking-[0.22em]">Follow</span>
+				<div class="text-primary-500 flex items-center gap-3">
+					<a
+						href="https://www.instagram.com/portraitsbypolo/"
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label="Portraits by Polo on Instagram"
+						class="mobile-nav__social-link"
+					>
+						<Icon name="socials/basil-instagram-solid" class="size-5" />
+					</a>
+					<a
+						href="https://www.youtube.com/@portraitsbypolo_"
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label="Portraits by Polo on YouTube"
+						class="mobile-nav__social-link"
+					>
+						<Icon name="socials/mdi-youtube" class="size-5" />
+					</a>
+				</div>
+			</div>
+
+			<!-- divider -->
+			<div class="bg-base-200/70 mb-4 h-px w-full"></div>
+
+			<!-- version -->
+			<div
+				class="group mb-3 flex cursor-default items-center gap-2 opacity-25 transition-opacity duration-500 hover:opacity-50"
+			>
+				<div class="h-px w-5 bg-current transition-all duration-500 group-hover:w-8"></div>
+				<span class="text-[0.6rem] uppercase tracking-[0.25em]">v{version}</span>
+				<div class="h-px w-5 bg-current transition-all duration-500 group-hover:w-8"></div>
+			</div>
+
+			<!-- developer credit -->
+			<div
+				class="flex items-center gap-2 text-xs opacity-35 transition-opacity duration-300 hover:opacity-60"
+			>
+				<span class="tracking-wide">By Kibuthi Muikia</span>
+				<span class="text-base-400 select-none" aria-hidden="true">·</span>
+				<div class="flex items-center gap-1.5">
+					<a
+						href="https://github.com/kibmuikia"
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label="Kibuthi Muikia on GitHub"
+						class="transition-opacity duration-200 hover:opacity-80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary-300"
+					>
+						<Icon name="socials/mdi-github" class="size-3.5" />
+					</a>
+					<a
+						href="https://www.linkedin.com/in/muikia-allan/"
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label="Kibuthi Muikia on LinkedIn"
+						class="transition-opacity duration-200 hover:opacity-80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary-300"
+					>
+						<Icon name="socials/mdi-linkedin" class="size-3.5" />
+					</a>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -174,5 +243,33 @@ import { Icon } from "astro-icon/components";
 		100% {
 			right: calc(var(--spacing) * -72);
 		}
+	}
+
+	/* footer fades up after drawer finishes sliding in */
+	.mobile-nav__footer {
+		animation: mobileNavFooterIn 0.35s ease-out 0.28s both;
+	}
+
+	@keyframes mobileNavFooterIn {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* social icon micro-interaction */
+	.mobile-nav__social-link {
+		display: inline-flex;
+		transition:
+			opacity 0.2s ease,
+			transform 0.2s ease;
+	}
+	.mobile-nav__social-link:hover {
+		opacity: 0.75;
+		transform: scale(1.12);
 	}
 </style>
