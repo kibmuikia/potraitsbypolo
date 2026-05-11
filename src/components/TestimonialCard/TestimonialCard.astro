@@ -195,4 +195,17 @@ const { title, company, linkedin, testimonial: testimonialText, image } = testim
 		text-transform: uppercase;
 		color: color-mix(in oklch, white 40%, transparent);
 	}
+
+	/*
+	 * Dark mode: --color-base-900 remaps to near-white (oklch 91%), turning the card background light
+	 * while all text colors remain white-based. Pin card to a stable dark elevated surface instead.
+	 */
+	:global(.dark) .testimonial-card {
+		background: color-mix(in oklch, oklch(27% 0 0) 90%, transparent);
+		border-color: color-mix(in oklch, white 10%, transparent);
+
+		&:hover {
+			border-color: color-mix(in oklch, var(--color-primary-400, #c9a96e) 35%, transparent);
+		}
+	}
 </style>
