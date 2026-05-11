@@ -29,13 +29,15 @@
 		"@fontsource-variable/work-sans": "5.2.8",
 		"@fontsource/cinzel-decorative": "5.2.8",
 		"@iconify-json/tabler": "1.2.33",
+		"@supabase/supabase-js": "^2.105.4",
 		"@tailwindcss/forms": "0.5.11",
 		"@tailwindcss/vite": "4.2.4",
 		"astro": "6.2.2",
 		"astro-auto-import": "0.5.1",
 		"astro-icon": "1.1.5",
 		"astro-seo": "1.1.0",
-		"tailwindcss": "4.2.4"
+		"tailwindcss": "4.2.4",
+		"zod": "^4.4.3"
 	},
 	"devDependencies": {
 		"@eslint/js": "10.0.1",
