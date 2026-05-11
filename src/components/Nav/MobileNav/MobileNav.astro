@@ -272,4 +272,59 @@ import { version } from "../../../../package.json";
 		opacity: 0.75;
 		transform: scale(1.12);
 	}
+
+	/* ── Nav link entrance — staggered slide-in from left ── */
+	:global(#mobile-nav__content nav ul li) {
+		animation: mobileNavLinkIn 0.28s ease-out both;
+	}
+	:global(#mobile-nav__content nav ul li:nth-child(1)) { animation-delay: 0.06s; }
+	:global(#mobile-nav__content nav ul li:nth-child(2)) { animation-delay: 0.13s; }
+	:global(#mobile-nav__content nav ul li:nth-child(3)) { animation-delay: 0.20s; }
+	:global(#mobile-nav__content nav ul li:nth-child(4)) { animation-delay: 0.27s; }
+	:global(#mobile-nav__content nav ul li:nth-child(5)) { animation-delay: 0.34s; }
+	:global(#mobile-nav__content nav ul li:nth-child(6)) { animation-delay: 0.41s; }
+
+	@keyframes mobileNavLinkIn {
+		from {
+			opacity: 0;
+			transform: translateX(-14px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+
+	/* ── Nav link hover — slide right + left accent bar ── */
+	:global(#mobile-nav__content nav ul li a) {
+		position: relative;
+		transition: transform 0.22s ease, opacity 0.22s ease;
+	}
+
+	/* left accent bar — hidden by default, scales in on hover */
+	:global(#mobile-nav__content nav ul li a::before) {
+		content: "";
+		position: absolute;
+		left: 8px;
+		top: 50%;
+		margin-top: -0.55em;
+		width: 2px;
+		height: 1.1em;
+		background: currentColor;
+		border-radius: 1px;
+		opacity: 0;
+		transform: scaleY(0);
+		transform-origin: center;
+		transition: transform 0.22s ease, opacity 0.22s ease;
+	}
+
+	:global(#mobile-nav__content nav ul li a:hover) {
+		opacity: 1; /* override nav__link--base hover:opacity-80 */
+		transform: translateX(10px);
+	}
+
+	:global(#mobile-nav__content nav ul li a:hover::before) {
+		opacity: 0.4;
+		transform: scaleY(1);
+	}
 </style>
