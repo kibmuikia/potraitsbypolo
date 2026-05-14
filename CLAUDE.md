@@ -6,3 +6,5 @@
 - After tasks: Provide sample commit message for user to use manually. Commit format: `<type>(<scope>): <subject>`. Examples: `feat(hero): add animated background`, `fix(toast): correct coming-soon interception`, `docs(changelog): add initial docs`, `refactor(footer): improve spacing`.
 - Local Cloudflare Workers dev: `pnpm dev:cloudflare` (builds then runs wrangler dev). Use instead of `pnpm dev` when testing Workers-specific behavior.
 - ensure proper use of debug logs especially in scripts.
+- always ensure dark & light theme mode support for any ui element.
+- ensure tasks are understood, assessed, planned for, plan is re-validated using current data then task is implemented. note: dont get into a rabbit-hole type of search - no over-searching.
