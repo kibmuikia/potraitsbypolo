@@ -20,6 +20,8 @@ export const server = {
 			}),
 		]),
 		handler: async (input) => {
+			console.debug("[submitContact] channel=%s", input.channel);
+
 			let row: TablesInsert<"contact_submissions">;
 			if (input.channel === "email") {
 				row = {
@@ -33,10 +35,17 @@ export const server = {
 				row = { channel: input.channel, message: input.message };
 			}
 
+			console.debug("[submitContact] inserting row", { channel: row.channel });
 			const { error } = await supabase.from("contact_submissions").insert(row);
 
-			if (error) throw new Error(error.message);
-			return { success: true };
+			if (error) {
+				// Do not throw — caller decides whether to surface this to the user
+				console.error("[submitContact] Supabase insert failed:", error.message);
+				return { success: true as const, dbSaved: false as const, dbError: error.message };
+			}
+
+			console.debug("[submitContact] Supabase insert OK");
+			return { success: true as const, dbSaved: true as const };
 		},
 	}),
 };
