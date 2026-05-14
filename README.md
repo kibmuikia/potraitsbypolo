@@ -92,7 +92,7 @@ Database migrations are tracked in `docs/migrations/` as plain SQL files. Run th
 
 Design tokens, typography, colors, and component patterns are documented in `docs/design-system.md`.
 
-The theme uses a warm neutral palette (cream, charcoal, muted gold) with elegant serif headings and clean sans-serif body text, evoking a high-end portrait photography brand. All components support both light and dark modes via CSS custom property inversion defined in `src/styles/global.css`.
+The theme implements a multi-font hierarchy — Playfair Display Variable for primary headings (h1/h2), Raleway Variable for subheadings (h3), Cinzel Decorative for decorative text, and Work Sans Variable for sans-serif body — anchored by an OKLCH color system with warm neutral primaries (`--color-primary-*`) and achromatic bases (`--color-base-*`). Dark mode is toggled via a .dark class on `<html>`, which inverts the base color scale through CSS custom property overrides and switches the color scheme to dark[`src/styles/global.css`].
 
 ## License
 
