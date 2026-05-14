@@ -1,9 +1,4 @@
 ---
-/**
- * Testimonial card — circular avatar variant with scroll-reveal support.
- * Receives `--stagger-i` via inline style from parent for staggered entrance.
- */
-
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { Icon } from "astro-icon/components";
@@ -21,13 +16,16 @@ const { title, company, linkedin, testimonial: testimonialText, image } = testim
 <article
 	class="testimonial-card"
 	style={`--i: ${index};`}
+	data-name={title}
 	aria-label={`Testimonial from ${title}`}
 >
 	<!-- Quote mark — decorative -->
 	<span class="quote-mark" aria-hidden="true">&ldquo;</span>
 
-	<!-- Body text first so avatar anchors the attribution below -->
-	<p class="testimonial-text">{testimonialText}</p>
+	<!-- Text container: collapsed by default, revealed on interaction -->
+	<div class="text-container">
+		<p class="testimonial-text">{testimonialText}</p>
+	</div>
 
 	<!-- Avatar + attribution row -->
 	<footer class="testimonial-footer">
@@ -69,27 +67,33 @@ const { title, company, linkedin, testimonial: testimonialText, image } = testim
 
 <style>
 	.testimonial-card {
-		/* Layout */
+		/*
+		 * --card-bg must match the card's actual background so the text-fade
+		 * gradient blends seamlessly. Updated in the dark-mode override below.
+		 */
+		--card-bg: color-mix(in oklch, #0a0a0a 95%, transparent);
+
 		display: flex;
 		flex-direction: column;
 		gap: 1.25rem;
 		padding: 2rem 1.75rem 1.75rem;
 
-		/* Surface */
 		background: color-mix(in oklch, var(--color-base-900, #0a0a0a) 80%, transparent);
 		border: 1px solid color-mix(in oklch, white 8%, transparent);
 		border-radius: 1.25rem;
 		backdrop-filter: blur(12px);
 		-webkit-backdrop-filter: blur(12px);
 
+		cursor: pointer;
+
 		/* Scroll-reveal: hidden by default, JS adds .is-visible */
 		opacity: 0;
-		translate: 0 2rem;
+		translate: 0 1rem;
 		transition:
 			opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 120ms),
-			translate 0.55s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 120ms);
+			translate 0.55s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 120ms),
+			border-color 0.3s ease;
 
-		/* Hover lift */
 		&:hover {
 			border-color: color-mix(in oklch, var(--color-primary-400, #c9a96e) 30%, transparent);
 			translate: 0 -3px;
@@ -113,17 +117,47 @@ const { title, company, linkedin, testimonial: testimonialText, image } = testim
 		font-family: Georgia, serif;
 		user-select: none;
 		display: block;
-		margin-bottom: -0.75rem; /* tighten gap to text */
+		margin-bottom: -0.75rem;
+	}
+
+	/* ── Text reveal container ────────────────────────── */
+	.text-container {
+		position: relative;
+		overflow: hidden;
+		/* ~4 lines at clamp(0.9rem) × 1.7 line-height */
+		max-height: 7rem;
+		transition: max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+
+		/* Gradient fade indicating truncated content */
+		&::after {
+			content: '';
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height: 2.5rem;
+			background: linear-gradient(to bottom, transparent, var(--card-bg));
+			transition: opacity 0.3s ease;
+			pointer-events: none;
+		}
+	}
+
+	.testimonial-card.is-revealed .text-container {
+		max-height: 32rem;
+
+		&::after {
+			opacity: 0;
+		}
 	}
 
 	.testimonial-text {
 		font-size: clamp(0.9rem, 1.5vw, 1.05rem);
 		line-height: 1.7;
 		color: color-mix(in oklch, white 80%, transparent);
-		flex: 1;
 		text-pretty: auto;
 	}
 
+	/* ── Footer ───────────────────────────────────────── */
 	.testimonial-footer {
 		display: flex;
 		align-items: center;
@@ -171,6 +205,7 @@ const { title, company, linkedin, testimonial: testimonialText, image } = testim
 		color: white;
 	}
 
+	/* ── LinkedIn icon ────────────────────────────────── */
 	.linkedin-link {
 		color: color-mix(in oklch, white 45%, transparent);
 		transition: color 0.2s ease, translate 0.2s ease;
@@ -182,6 +217,22 @@ const { title, company, linkedin, testimonial: testimonialText, image } = testim
 			translate: 0 -1px;
 			outline: none;
 		}
+	}
+
+	/* Pulse only while card is in revealed state */
+	@keyframes linkedin-pulse {
+		0%, 100% {
+			color: color-mix(in oklch, white 50%, transparent);
+			transform: translateY(0) scale(1);
+		}
+		50% {
+			color: white;
+			transform: translateY(-1px) scale(1.2);
+		}
+	}
+
+	.testimonial-card.is-revealed .linkedin-link {
+		animation: linkedin-pulse 2.2s ease-in-out infinite;
 	}
 
 	.linkedin-icon {
@@ -199,8 +250,10 @@ const { title, company, linkedin, testimonial: testimonialText, image } = testim
 	/*
 	 * Dark mode: --color-base-900 remaps to near-white (oklch 91%), turning the card background light
 	 * while all text colors remain white-based. Pin card to a stable dark elevated surface instead.
+	 * Also update --card-bg so the gradient fade matches.
 	 */
 	:global(.dark) .testimonial-card {
+		--card-bg: color-mix(in oklch, oklch(27% 0 0) 95%, transparent);
 		background: color-mix(in oklch, oklch(27% 0 0) 90%, transparent);
 		border-color: color-mix(in oklch, white 10%, transparent);
 
