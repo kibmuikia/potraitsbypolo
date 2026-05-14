@@ -239,7 +239,7 @@ const sortedTestimonials = testimonials.sort((a, b) => a.data.order - b.data.ord
 
 		function scrollToSlide(index: number) {
 			const slide = slides[index];
-			if (!slide) return;
+			if (!slide || !track) return;
 			track.scrollTo({
 				left: slide.offsetLeft - track.offsetLeft,
 				behavior: "smooth",
