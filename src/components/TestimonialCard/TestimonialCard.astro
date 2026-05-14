@@ -11,6 +11,13 @@ interface Props {
 
 const { testimonial, index = 0 } = Astro.props as Props;
 const { title, company, linkedin, testimonial: testimonialText, image } = testimonial.data;
+
+// Short fixed-length snippet so all cards are the same size in default state
+const SNIPPET_CHARS = 52;
+const snippet =
+	testimonialText.length > SNIPPET_CHARS
+		? testimonialText.slice(0, SNIPPET_CHARS).trimEnd() + "…"
+		: testimonialText;
 ---
 
 <article
@@ -19,15 +26,21 @@ const { title, company, linkedin, testimonial: testimonialText, image } = testim
 	data-name={title}
 	aria-label={`Testimonial from ${title}`}
 >
-	<!-- Quote mark — decorative -->
+	<!--
+		Grid layout:
+		  col 1 (auto)  — quote mark
+		  col 2 (1fr)   — snippet text (default) / empty (revealed)
+		  row 2 full    — full testimonial text (hidden → revealed)
+		  row 3 full    — footer (always visible)
+	-->
 	<span class="quote-mark" aria-hidden="true">&ldquo;</span>
 
-	<!-- Text container: collapsed by default, revealed on interaction -->
-	<div class="text-container">
-		<p class="testimonial-text">{testimonialText}</p>
-	</div>
+	<!-- Truncated snippet — visible only in default state (aria-hidden: full text is the a11y content) -->
+	<p class="text-snippet" aria-hidden="true">{snippet}</p>
 
-	<!-- Avatar + attribution row -->
+	<!-- Full text — hidden in default state, expands on reveal -->
+	<p class="text-full">{testimonialText}</p>
+
 	<footer class="testimonial-footer">
 		<div class="avatar-wrap">
 			<Image
@@ -50,33 +63,26 @@ const { title, company, linkedin, testimonial: testimonialText, image } = testim
 						aria-label={`${title} on LinkedIn`}
 						class="linkedin-link"
 					>
-						<Icon
-							name="socials/mdi-linkedin"
-							aria-hidden="true"
-							class="linkedin-icon"
-						/>
+						<Icon name="socials/mdi-linkedin" aria-hidden="true" class="linkedin-icon" />
 					</a>
 				)}
 			</div>
-			{company && (
-				<p class="company">{company}</p>
-			)}
+			{company && <p class="company">{company}</p>}
 		</div>
 	</footer>
 </article>
 
 <style>
 	.testimonial-card {
-		/*
-		 * --card-bg must match the card's actual background so the text-fade
-		 * gradient blends seamlessly. Updated in the dark-mode override below.
-		 */
-		--card-bg: color-mix(in oklch, #0a0a0a 95%, transparent);
-
-		display: flex;
-		flex-direction: column;
-		gap: 1.25rem;
-		padding: 2rem 1.75rem 1.75rem;
+		display: grid;
+		/* col 1: quote glyph (auto), col 2: snippet / rest (1fr) */
+		grid-template-columns: auto 1fr;
+		grid-template-areas:
+			"quote snippet"
+			"body  body"
+			"foot  foot";
+		column-gap: 0.875rem;
+		padding: 1.75rem 1.75rem 1.5rem;
 
 		background: color-mix(in oklch, var(--color-base-900, #0a0a0a) 80%, transparent);
 		border: 1px solid color-mix(in oklch, white 8%, transparent);
@@ -86,7 +92,7 @@ const { title, company, linkedin, testimonial: testimonialText, image } = testim
 
 		cursor: pointer;
 
-		/* Scroll-reveal: hidden by default, JS adds .is-visible */
+		/* Entrance reveal: stagger via --i */
 		opacity: 0;
 		translate: 0 1rem;
 		transition:
@@ -109,65 +115,84 @@ const { title, company, linkedin, testimonial: testimonialText, image } = testim
 		}
 	}
 
+	/* ── Quote mark ───────────────────────────────────── */
 	.quote-mark {
-		font-size: 3.5rem;
-		line-height: 1;
+		grid-area: quote;
+		font-size: 4.5rem;
+		line-height: 0.75;
 		color: var(--color-primary-300, #d4b483);
-		opacity: 0.5;
+		opacity: 0.65;
 		font-family: Georgia, serif;
 		user-select: none;
-		display: block;
-		margin-bottom: -0.75rem;
+		align-self: center;
+		/* Spring shrink: scale down from left-center anchor */
+		transform-origin: left center;
+		transition:
+			transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+			opacity 0.35s ease;
 	}
 
-	/* ── Text reveal container ────────────────────────── */
-	.text-container {
-		position: relative;
+	.testimonial-card.is-revealed .quote-mark {
+		/* Shrinks to ~2.5rem visual size (4.5 × 0.55) */
+		transform: scale(0.55);
+		opacity: 0.4;
+	}
+
+	/* ── Snippet (default-state text) ─────────────────── */
+	.text-snippet {
+		grid-area: snippet;
+		align-self: center;
+		font-size: 0.9rem;
+		line-height: 1.5;
+		color: color-mix(in oklch, white 75%, transparent);
+		/* Single-line — CSS truncation as safety net for the 52-char server-side cut */
+		white-space: nowrap;
 		overflow: hidden;
-		/* ~4 lines at clamp(0.9rem) × 1.7 line-height */
-		max-height: 7rem;
-		transition: max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-
-		/* Gradient fade indicating truncated content */
-		&::after {
-			content: '';
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			height: 2.5rem;
-			background: linear-gradient(to bottom, transparent, var(--card-bg));
-			transition: opacity 0.3s ease;
-			pointer-events: none;
-		}
+		text-overflow: ellipsis;
+		min-width: 0; /* required for text-overflow in a flex/grid child */
+		transition: opacity 0.18s ease;
 	}
 
-	.testimonial-card.is-revealed .text-container {
-		max-height: 32rem;
-
-		&::after {
-			opacity: 0;
-		}
+	.testimonial-card.is-revealed .text-snippet {
+		opacity: 0;
+		pointer-events: none;
 	}
 
-	.testimonial-text {
+	/* ── Full text (revealed state) ───────────────────── */
+	.text-full {
+		grid-area: body;
 		font-size: clamp(0.9rem, 1.5vw, 1.05rem);
 		line-height: 1.7;
 		color: color-mix(in oklch, white 80%, transparent);
 		text-pretty: auto;
+
+		overflow: hidden;
+		max-height: 0;
+		opacity: 0;
+		padding-top: 0;
+		transition:
+			max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+			opacity 0.4s ease 0.15s,
+			padding-top 0.35s ease;
+	}
+
+	.testimonial-card.is-revealed .text-full {
+		max-height: 32rem;
+		opacity: 1;
+		padding-top: 0.75rem;
 	}
 
 	/* ── Footer ───────────────────────────────────────── */
 	.testimonial-footer {
+		grid-area: foot;
 		display: flex;
 		align-items: center;
 		gap: 0.875rem;
+		margin-top: 1rem;
 		padding-top: 1rem;
 		border-top: 1px solid color-mix(in oklch, white 6%, transparent);
-		margin-top: auto;
 	}
 
-	/* Circular avatar */
 	.avatar-wrap {
 		flex-shrink: 0;
 		width: 3rem;
@@ -219,7 +244,7 @@ const { title, company, linkedin, testimonial: testimonialText, image } = testim
 		}
 	}
 
-	/* Pulse only while card is in revealed state */
+	/* Pulse only while card is in the revealed state */
 	@keyframes linkedin-pulse {
 		0%, 100% {
 			color: color-mix(in oklch, white 50%, transparent);
@@ -248,12 +273,9 @@ const { title, company, linkedin, testimonial: testimonialText, image } = testim
 	}
 
 	/*
-	 * Dark mode: --color-base-900 remaps to near-white (oklch 91%), turning the card background light
-	 * while all text colors remain white-based. Pin card to a stable dark elevated surface instead.
-	 * Also update --card-bg so the gradient fade matches.
+	 * Dark mode: pin card to stable dark elevated surface.
 	 */
 	:global(.dark) .testimonial-card {
-		--card-bg: color-mix(in oklch, oklch(27% 0 0) 95%, transparent);
 		background: color-mix(in oklch, oklch(27% 0 0) 90%, transparent);
 		border-color: color-mix(in oklch, white 10%, transparent);
 
