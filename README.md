@@ -1,106 +1,99 @@
 # Portraits by Polo
 
-Portfolio website for [@portraitsbypolo](https://www.instagram.com/portraitsbypolo/) — Global Film Camera Operator. Built with Astro and Tailwind CSS on the Horizon theme by [Cosmic Themes](https://cosmicthemes.com/).
+Portfolio website for [@portraitsbypolo](https://www.instagram.com/portraitsbypolo/) — Global Film Camera Operator. Built with [Astro](https://astro.build) v6, Tailwind CSS v4, and deployed to Cloudflare Workers. Built on Horizon theme by [Cosmic Themes](https://cosmicthemes.com/).
 
 ## Quickstart
 
-1. Fork this project to your own repository, and clone it to your local machine
-2. Install all necessary packages with `pnpm install`
-3. Run `pnpm run dev` to start the dev server
-4. Now you can setup the site to your liking!
-   - [Style customization](https://cosmicthemes.com/docs/styles/)
-   - [Content editing](https://cosmicthemes.com/docs/content/)
-   - [Forms](https://cosmicthemes.com/docs/contact-form/)
-5. Update the site URL in `astro.config.mjs` and `/public/robots.txt` to match your domain
-6. After you're happy, update your changes to your repo and [deploy to Netlify, Vercel, Cloudflare](https://cosmicthemes.com/deployment/), or other provider of your choice
-
-## Code Intro
-
-The source files have the following setup. Note that not all files are listed here.
-
+```bash
+pnpm install
+pnpm dev
 ```
+
+Requires **Node ≥ 22.12.0** and **pnpm 10.x** (`corepack enable` to activate).
+
+## Commands
+
+All commands run from the project root:
+
+| Command               | Action                                                   |
+| :-------------------- | :------------------------------------------------------- |
+| `pnpm dev`            | Start local dev server at `localhost:4321`               |
+| `pnpm dev:cloudflare` | Build + run via Wrangler at `localhost:8787` (Workers)   |
+| `pnpm build`          | Build production site to `./dist/`                       |
+| `pnpm preview`        | Build + preview via Cloudflare Workers locally           |
+| `pnpm deploy`         | Build and deploy to Cloudflare                           |
+| `pnpm check`          | Type-check with `astro check`                            |
+| `pnpm format`         | Lint + format with ESLint and Prettier                   |
+| `pnpm lint`           | Lint only (no write)                                     |
+
+> **Prefer `pnpm dev:cloudflare`** for this project. `pnpm dev` (plain Vite) triggers a `module is not defined` error from the Cloudflare Workers runner at runtime — use it only for quick UI-only iteration where Workers features aren't exercised.
+
+## Project Structure
+
+```text
 .
-├── .tours/
-│   └── code-intro.tour
-├── public/
-│   ├── favicons/
-│   │   └── favicon.ico
-│   ├── images/
-│   └── robots.txt
+├── docs/                     # Design docs, migration SQL files, plans
+├── public/                   # Static assets served as-is
 ├── src/
-│   ├── assets/
-│   │   └── images/
-│   │       └── site-logo.png
-│   ├── components/
-│   │   └── Hero/
-│   │       └── Hero.astro
-│   ├── config/
-│   │   └── navData.json.ts
-│   ├── data/
-│   │   ├── portfolios/
-│   │   ├── testimonials/
-│   │   └──otherPages/
-│   │    config.ts
-│   ├── js/
-│   │   └── textUtils.ts
-│   ├── layouts/
-│   │   └── BaseLayout.astro
-│   ├── pages/
-│   │   ├── index.astro
-│   │   ├── portfolio/
-│   │   │   ├── [...slug].astro
-│   │   │   └── index.astro
-│   │   ├── [page].astro
-│   │   ├── 404.astro
-│   │   └── index.astro
-│   ├── styles/
-│   │   └── global.css
-│   └── content.config.ts
-├── .gitignore
-├── .prettierrc.mjs
+│   ├── actions/              # Astro server actions (contact form, admin ops)
+│   ├── assets/               # Images processed by Astro's image optimizer
+│   ├── components/           # Astro UI components, organized by feature
+│   ├── config/               # Site metadata and nav configuration
+│   ├── data/                 # Content: portfolios, testimonials, static pages
+│   ├── icons/                # Local SVG icons
+│   ├── js/                   # Utility modules (Supabase clients, text helpers)
+│   ├── layouts/              # Page layout wrappers
+│   ├── pages/                # File-based routes
+│   │   ├── admin/            # Password-protected admin dashboard
+│   │   └── portfolio/        # Portfolio collection routes
+│   ├── styles/               # Global CSS, design tokens, Tailwind theme
+│   ├── content.config.ts     # Astro content collection schemas
+│   ├── database.types.ts     # Supabase-generated DB type definitions
+│   ├── env.d.ts              # Environment variable type declarations
+│   └── middleware.ts         # Admin route protection (session check)
 ├── astro.config.mjs
-├── netlify.toml
-├── package.json
-├── package-lock.json
-├── README.md
+├── wrangler.jsonc            # Cloudflare Workers / KV bindings config
 └── tsconfig.json
 ```
 
-For robots like Google to see the correct sitemap, you will want to edit the `public/robots.txt` file to use your website domain.
+Content collections live under `src/data/` — add a new folder with an `index.md` to create a new portfolio or testimonial entry.
 
-## Other Resources
+## Supabase Integration
 
-- See my blog post on [recommended Astro web development setup](https://cosmicthemes.com/blog/astro-web-development-setup/).
-- You can learn more information from the [theme docs](https://cosmicthemes.com/docs/) page on the [Cosmic Themes Website](https://cosmicthemes.com/).
+The project uses [Supabase](https://supabase.com) for contact/lead management. Two clients are available:
+
+| Module                    | Key used          | Use for                                      |
+| :------------------------ | :---------------- | :------------------------------------------- |
+| `src/js/supabase.ts`      | Anon (public)     | Client-side reads, public queries            |
+| `src/js/supabase-admin.ts`| Service role      | Server-only writes, RLS-bypassing operations |
+
+The admin client is server-only — never import it in client-side code or public components.
+
+**Type regeneration** (after schema changes):
+
+```bash
+pnpm dlx supabase gen types typescript --project-id <project-id> > src/database.types.ts
+```
+
+Database migrations are tracked in `docs/migrations/` as plain SQL files. Run them manually in the Supabase SQL editor.
+
+## Key Stack Versions
+
+| Package                  | Version   |
+| :----------------------- | :-------- |
+| `astro`                  | 6.2.2     |
+| `@astrojs/cloudflare`    | ^13.3.1   |
+| `tailwindcss`            | 4.2.4     |
+| `@supabase/supabase-js`  | ^2.105.4  |
+| `zod`                    | ^4.4.3    |
+| `wrangler`               | ^4.87.0   |
+
+## Design System
+
+Design tokens, typography, colors, and component patterns are documented in `docs/design-system.md`.
+
+The theme uses a warm neutral palette (cream, charcoal, muted gold) with elegant serif headings and clean sans-serif body text, evoking a high-end portrait photography brand. All components support both light and dark modes via CSS custom property inversion defined in `src/styles/global.css`.
 
 ## License
 
-This project is open source and available under the [GPL-3.0 License](https://www.gnu.org/licenses/gpl-3.0.en.html).
-
-However, If you have purchased [All Access](https://cosmicthemes.com/all-access/) from Cosmic Themes, there is a no attribution required license you can view at [License details](https://cosmicthemes.com/license/).
-
-## General Astro Info
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory. I also frequently use `src/assets` for images when using Astro asssets for image optimization.
-
-### Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm run dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm run dev:cloudflare`  | Starts local dev server at `localhost:8787`      |
-| `pnpm run build`           | Build your production site to `./dist/`          |
-| `pnpm run preview`         | Preview your build locally, before deploying     |
-| `pnpm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm run astro -- --help` | Get help using the Astro CLI                     |
-
-### Want to learn more?
-
-Feel free to check out the [Astro documentation](https://docs.astro.build).
+This is a private client project built for Paul ([@portraitsbypolo](https://www.instagram.com/portraitsbypolo/)) and is not open source. The underlying theme ([Horizon by Cosmic Themes](https://cosmicthemes.com/)) is GPL-3.0, but the customizations, content, and feature work in this repository are proprietary.
