@@ -38,16 +38,23 @@ const testimonials = defineCollection({
 		base: "./src/data/testimonials",
 	}),
 	schema: ({ image }) =>
-		z.object({
-			title: z.string(),
-			company: z.string().optional(),
-			linkedin: z.string().optional(),
-			testimonial: z.string(),
-			image: image(),
-			order: z.number(),
-			// will be excluded from build if draft is "true"
-			draft: z.boolean().optional(),
-		}),
+		z
+			.object({
+				title: z.string().optional(),
+				name: z.string().optional(),
+				company: z.string().optional(),
+				companyLink: z.string().optional(),
+				jobTitle: z.string().optional(),
+				linkedin: z.string().optional(),
+				testimonial: z.string(),
+				image: image(),
+				order: z.number(),
+				// will be excluded from build if draft is "true"
+				draft: z.boolean().optional(),
+			})
+			.refine((data) => data.title || data.name, {
+				message: "Either 'title' or 'name' must be provided",
+			}),
 });
 
 // other pages

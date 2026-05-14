@@ -10,7 +10,8 @@ interface Props {
 }
 
 const { testimonial, index = 0 } = Astro.props as Props;
-const { title, company, linkedin, testimonial: testimonialText, image } = testimonial.data;
+const { title, name, company, companyLink, jobTitle, linkedin, testimonial: testimonialText, image } = testimonial.data;
+const displayName = name ?? title ?? "";
 
 // Short fixed-length snippet so all cards are the same size in default state
 const SNIPPET_CHARS = 52;
@@ -23,8 +24,8 @@ const snippet =
 <article
 	class="testimonial-card"
 	style={`--i: ${index};`}
-	data-name={title}
-	aria-label={`Testimonial from ${title}`}
+	data-name={displayName}
+	aria-label={`Testimonial from ${displayName}`}
 >
 	<!--
 		Grid layout:
@@ -45,7 +46,7 @@ const snippet =
 		<div class="avatar-wrap">
 			<Image
 				src={image}
-				alt={`Portrait of ${title}`}
+				alt={`Portrait of ${displayName}`}
 				width={80}
 				densities={[1.5, 2]}
 				class="avatar-img"
@@ -54,20 +55,25 @@ const snippet =
 
 		<div class="attribution">
 			<div class="name-row">
-				<span class="name">{title}</span>
+				<span class="name">{displayName}</span>
 				{linkedin && (
 					<a
 						href={linkedin}
 						target="_blank"
 						rel="noopener noreferrer"
-						aria-label={`${title} on LinkedIn`}
+						aria-label={`${displayName} on LinkedIn`}
 						class="linkedin-link"
 					>
 						<Icon name="socials/mdi-linkedin" aria-hidden="true" class="linkedin-icon" />
 					</a>
 				)}
 			</div>
-			{company && <p class="company">{company}</p>}
+			{jobTitle && <p class="job-title">{jobTitle}</p>}
+			{company && (
+				companyLink
+					? <a href={companyLink} target="_blank" rel="noopener noreferrer" class="company company-link">{company}</a>
+					: <p class="company">{company}</p>
+			)}
 		</div>
 	</footer>
 </article>
@@ -265,11 +271,28 @@ const snippet =
 		height: 0.9rem;
 	}
 
+	.job-title {
+		font-size: 0.7rem;
+		letter-spacing: 0.08em;
+		color: color-mix(in oklch, var(--color-primary-300, #d4b483) 70%, transparent);
+	}
+
 	.company {
 		font-size: 0.7rem;
 		letter-spacing: 0.18em;
 		text-transform: uppercase;
 		color: color-mix(in oklch, white 40%, transparent);
+	}
+
+	.company-link {
+		text-decoration: none;
+		transition: color 0.2s ease;
+
+		&:hover,
+		&:focus-visible {
+			color: color-mix(in oklch, white 65%, transparent);
+			outline: none;
+		}
 	}
 
 	/*
