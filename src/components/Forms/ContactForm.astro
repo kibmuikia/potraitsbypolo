@@ -210,19 +210,31 @@ const WA_DEFAULT_MSG =
 	aria-live="polite"
 	aria-atomic="true"
 	aria-hidden="true"
+	data-variant="success"
 	class="cf-toast"
 >
 	<div class="cf-toast__inner">
 		<div class="cf-toast__icon" aria-hidden="true">
-			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+			<!-- success: checkmark circle -->
+			<svg class="cf-toast__icon--success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+				<circle cx="12" cy="12" r="9"></circle>
+				<path stroke-linecap="round" stroke-linejoin="round" d="M8 12l3 3 5-5"></path>
+			</svg>
+			<!-- info: clock -->
+			<svg class="cf-toast__icon--info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
 				<circle cx="12" cy="12" r="9"></circle>
 				<path stroke-linecap="round" d="M12 7v5l3 3"></path>
 			</svg>
+			<!-- error: x-circle -->
+			<svg class="cf-toast__icon--error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+				<circle cx="12" cy="12" r="9"></circle>
+				<path stroke-linecap="round" stroke-linejoin="round" d="M9 9l6 6M15 9l-6 6"></path>
+			</svg>
 		</div>
 		<div class="cf-toast__content">
-			<p class="cf-toast__title">Coming Soon</p>
-			<p class="cf-toast__body">
-				We're building something worth waiting for. You'll hear from us soon.
+			<p id="toast-title" class="cf-toast__title">( Coming Soon! )Inquiry Received</p>
+			<p id="toast-body" class="cf-toast__body">
+				Thanks for reaching out. Paul will be in touch within 1–2 business days.
 			</p>
 		</div>
 		<button id="toast-close" class="cf-toast__close" aria-label="Dismiss">
@@ -513,13 +525,58 @@ const WA_DEFAULT_MSG =
 			transform: scaleX(0);
 		}
 	}
+
+	/* ── Toast icon variants ──────────────────── */
+	.cf-toast__icon--info,
+	.cf-toast__icon--error,
+	.cf-toast__icon--success {
+		display: none;
+		width: 100%;
+		height: 100%;
+	}
+
+	.cf-toast[data-variant="success"] .cf-toast__icon--success { display: block; }
+	.cf-toast[data-variant="info"]    .cf-toast__icon--info    { display: block; }
+	.cf-toast[data-variant="error"]   .cf-toast__icon--error   { display: block; }
+
+	.cf-toast[data-variant="error"] .cf-toast__progress {
+		background-color: oklch(65% 0.22 25);
+	}
+
+	.cf-toast[data-variant="error"] .cf-toast__title {
+		color: oklch(72% 0.18 25);
+	}
 </style>
 
 <script>
-	// ── Tab switching ──────────────────────────
-	const tabs = document.querySelectorAll<HTMLButtonElement>('[role="tab"]');
-	const panels = document.querySelectorAll<HTMLDivElement>('[role="tabpanel"]');
+	import { actions } from "astro:actions";
 
+	const IS_DEV = import.meta.env.DEV;
+
+	// ── Helpers ────────────────────────────────
+	const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+	// ── DOM refs ───────────────────────────────
+	const tabs    = document.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+	const panels  = document.querySelectorAll<HTMLDivElement>('[role="tabpanel"]');
+	const form    = document.getElementById("contact-form")      as HTMLFormElement;
+	const submitBtn  = document.getElementById("contact-submit-btn") as HTMLButtonElement;
+	const btnLabel   = document.getElementById("btn-label")          as HTMLSpanElement;
+	const btnSpinner = document.getElementById("btn-spinner")         as unknown as SVGSVGElement;
+	const btnCheck   = document.getElementById("btn-check")           as unknown as SVGSVGElement;
+	const btnX       = document.getElementById("btn-x")               as unknown as SVGSVGElement;
+	const toast      = document.getElementById("contact-toast")       as HTMLDivElement;
+	const toastTitle = document.getElementById("toast-title")         as HTMLParagraphElement;
+	const toastBody  = document.getElementById("toast-body")          as HTMLParagraphElement;
+	const toastClose = document.getElementById("toast-close")         as HTMLButtonElement;
+	const toastProgress = document.getElementById("toast-progress")   as HTMLDivElement;
+	const waMsg = document.getElementById("wa-message") as HTMLTextAreaElement | null;
+	const waCta = document.getElementById("wa-cta")     as HTMLAnchorElement    | null;
+
+	let dismissTimer:   ReturnType<typeof setTimeout> | null = null;
+	let errorResetTimer: ReturnType<typeof setTimeout> | null = null;
+
+	// ── Tab switching ──────────────────────────
 	tabs.forEach((tab) => {
 		tab.addEventListener("click", () => {
 			tabs.forEach((t) => t.setAttribute("aria-selected", "false"));
@@ -527,23 +584,11 @@ const WA_DEFAULT_MSG =
 			tab.setAttribute("aria-selected", "true");
 			const panelId = tab.getAttribute("aria-controls");
 			if (panelId) document.getElementById(panelId)?.classList.remove("hidden");
+			console.debug("[ContactForm] switched to tab:", panelId);
 		});
 	});
 
-	// ── Email form ─────────────────────────────
-	const form = document.getElementById("contact-form") as HTMLFormElement;
-	const submitBtn = document.getElementById("contact-submit-btn") as HTMLButtonElement;
-	const btnLabel = document.getElementById("btn-label") as HTMLSpanElement;
-	const btnSpinner = document.getElementById("btn-spinner") as unknown as SVGSVGElement;
-	const btnCheck = document.getElementById("btn-check") as unknown as SVGSVGElement;
-	const btnX = document.getElementById("btn-x") as unknown as SVGSVGElement;
-	const toast = document.getElementById("contact-toast") as HTMLDivElement;
-	const toastClose = document.getElementById("toast-close") as HTMLButtonElement;
-	const toastProgress = document.getElementById("toast-progress") as HTMLDivElement;
-
-	let dismissTimer: ReturnType<typeof setTimeout> | null = null;
-	let errorResetTimer: ReturnType<typeof setTimeout> | null = null;
-
+	// ── Submit-button state ────────────────────
 	function setBtn(state: "idle" | "loading" | "success" | "error") {
 		btnSpinner.classList.add("hidden");
 		btnCheck.classList.add("hidden");
@@ -568,6 +613,7 @@ const WA_DEFAULT_MSG =
 		}
 	}
 
+	// ── Field validation ───────────────────────
 	function validateField(input: HTMLInputElement | HTMLTextAreaElement) {
 		const field = input.closest<HTMLElement>(".cf-field");
 		if (!field) return;
@@ -584,22 +630,32 @@ const WA_DEFAULT_MSG =
 		}
 	}
 
-	(
-		form.querySelectorAll(
-			"input:not([type=hidden]), textarea",
-		) as NodeListOf<HTMLInputElement | HTMLTextAreaElement>
-	).forEach((input) => {
-		input.addEventListener("blur", () => {
-				if (input.value.trim() || input.required) validateField(input);
-			});
-			input.addEventListener("input", () => {
-				if (input.closest(".cf-field--error")) validateField(input);
-			});
+	form.querySelectorAll("input:not([type=hidden]), textarea")
+		.forEach((el) => {
+			const input = el as HTMLInputElement | HTMLTextAreaElement;
+			input.addEventListener("blur",  () => { if (input.value.trim() || input.required) validateField(input); });
+			input.addEventListener("input", () => { if (input.closest(".cf-field--error")) validateField(input); });
 		});
 
-	function showToast() {
+	// ── Toast manager ──────────────────────────
+	interface ToastConfig {
+		title?:   string;
+		body?:    string;
+		variant?: "success" | "info" | "error";
+	}
+
+	function showToast(cfg: ToastConfig = {}) {
+		const {
+			title   = "Inquiry Received",
+			body    = "Thanks for reaching out. Paul will be in touch within 1–2 business days.",
+			variant = "success",
+		} = cfg;
+		console.debug("[ContactForm:toast] show variant=%s title=%s", variant, title);
+		toastTitle.textContent  = title;
+		toastBody.textContent   = body;
+		toast.dataset.variant   = variant;
 		toastProgress.classList.remove("cf-progress--running");
-		void toastProgress.offsetWidth;
+		void toastProgress.offsetWidth; // force reflow to restart animation
 		toast.setAttribute("aria-hidden", "false");
 		toastProgress.classList.add("cf-progress--running");
 		if (dismissTimer) clearTimeout(dismissTimer);
@@ -607,58 +663,96 @@ const WA_DEFAULT_MSG =
 	}
 
 	function hideToast() {
-		if (dismissTimer) clearTimeout(dismissTimer);
-		dismissTimer = null;
+		if (dismissTimer) { clearTimeout(dismissTimer); dismissTimer = null; }
 		toast.setAttribute("aria-hidden", "true");
-		toast.addEventListener(
-			"transitionend",
-			() => toastProgress.classList.remove("cf-progress--running"),
-			{ once: true },
-		);
+		toast.addEventListener("transitionend", () => toastProgress.classList.remove("cf-progress--running"), { once: true });
 	}
-
-	form.addEventListener("submit", async (e) => {
-		e.preventDefault();
-		let allValid = true;
-		form
-			.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
-				"input:not([type=hidden]), textarea"
-			)
-			.forEach((input) => {
-				validateField(input);
-				if (!input.checkValidity()) allValid = false;
-			});
-		if (!allValid) return;
-
-		setBtn("loading");
-		try {
-			await new Promise<void>((r) => setTimeout(r, 1500));
-			setBtn("success");
-			await new Promise<void>((r) => setTimeout(r, 600));
-			showToast();
-			form.reset();
-			form.querySelectorAll<HTMLElement>(".cf-field").forEach((f) => {
-				f.classList.remove("cf-field--error", "cf-field--valid");
-			});
-			setBtn("idle");
-		} catch {
-			setBtn("error");
-		}
-	});
 
 	toastClose.addEventListener("click", hideToast);
 
-	// ── WhatsApp ───────────────────────────────
-	const waMsg = document.getElementById("wa-message") as HTMLTextAreaElement | null;
-	const waCta = document.getElementById("wa-cta") as HTMLAnchorElement | null;
+	// ── Email form submission ──────────────────
+	form.addEventListener("submit", async (e) => {
+		e.preventDefault();
 
+		// Client-side validation pass
+		let allValid = true;
+		form.querySelectorAll("input:not([type=hidden]), textarea")
+			.forEach((el) => {
+				const input = el as HTMLInputElement | HTMLTextAreaElement;
+				validateField(input);
+				if (!input.checkValidity()) allValid = false;
+			});
+		if (!allValid) {
+			console.debug("[ContactForm:email] validation failed — aborting");
+			return;
+		}
+
+		const fd   = new FormData(form);
+		const name = (fd.get("name")    as string).trim();
+		const email = (fd.get("email")  as string).trim();
+		const preferred_date = (fd.get("date") as string) || undefined;
+		const message = (fd.get("message") as string).trim();
+
+		console.debug("[ContactForm:email] submitting", { name, email, preferred_date });
+		setBtn("loading");
+
+		const { data, error } = await actions.submitContact({
+			channel: "email",
+			name,
+			email,
+			preferred_date,
+			message,
+		});
+
+		// Action-level error (network failure, server error, validation rejection)
+		if (error) {
+			console.error("[ContactForm:email] action error:", error.message);
+			setBtn("error");
+			showToast({
+				title:   "Something went wrong",
+				body:    "We couldn't send your message. Please try again.",
+				variant: "error",
+			});
+			return;
+		}
+
+		// Supabase insert failed — graceful degradation
+		if (!data.dbSaved) {
+			console.error("[ContactForm:email] Supabase insert failed:", data.dbError);
+			if (IS_DEV) {
+				setBtn("success");
+				await sleep(600);
+				showToast({
+					title:   "DEV — DB Save Failed",
+					body:    data.dbError ?? "Supabase insert returned an error.",
+					variant: "error",
+				});
+				resetForm();
+				return;
+			}
+			// Production: fall through to success UX — submission lost silently
+		}
+
+		console.debug("[ContactForm:email] success, dbSaved:", data.dbSaved);
+		setBtn("success");
+		await sleep(600);
+		showToast();
+		resetForm();
+	});
+
+	function resetForm() {
+		form.reset();
+		form.querySelectorAll(".cf-field").forEach((f) => f.classList.remove("cf-field--error", "cf-field--valid"));
+		setBtn("idle");
+	}
+
+	// ── WhatsApp: fire-and-forget save ─────────
+	// Opens in a new tab so the source page (and any dev error toast) remain visible.
 	function updateWaLink() {
 		if (!waCta || !waMsg) return;
 		const phone = waCta.dataset.phone ?? "";
 		if (!phone) {
-			console.warn(
-				"[ContactForm] WhatsApp number not set. Add PAUL_WHATSAPP_NUMBER in ContactForm.astro.",
-			);
+			console.warn("[ContactForm:whatsapp] PAUL_WHATSAPP_NUMBER not set — WhatsApp link will be broken.");
 			return;
 		}
 		const msg = waMsg.value.trim() || waMsg.defaultValue;
@@ -668,5 +762,32 @@ const WA_DEFAULT_MSG =
 	if (waCta && waMsg) {
 		waMsg.addEventListener("input", updateWaLink);
 		updateWaLink();
+
+		waCta.addEventListener("click", () => {
+			const msg = waMsg.value.trim() || waMsg.defaultValue;
+			console.debug("[ContactForm:whatsapp] click — firing Supabase save", { msgLen: msg.length });
+
+			// Fire-and-forget: save starts before navigation, resolves after WhatsApp opens in new tab
+			void actions.submitContact({ channel: "whatsapp", message: msg })
+				.then(({ data, error }) => {
+					if (error || !data?.dbSaved) {
+						const errMsg = error?.message ?? data?.dbError ?? "Unknown error";
+						console.error("[ContactForm:whatsapp] Supabase save failed:", errMsg);
+						if (IS_DEV) {
+							showToast({
+								title:   "DEV — WA Save Failed",
+								body:    errMsg,
+								variant: "error",
+							});
+						}
+					} else {
+						console.debug("[ContactForm:whatsapp] Supabase save OK");
+					}
+				})
+				.catch((err: unknown) => {
+					console.error("[ContactForm:whatsapp] unexpected error:", err);
+				});
+			// Default anchor behaviour proceeds — opens WhatsApp in new tab
+		});
 	}
 </script>
