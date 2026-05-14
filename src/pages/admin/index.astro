@@ -1,0 +1,441 @@
+---
+export const prerender = false;
+
+import { supabaseAdmin } from "../../js/supabase-admin";
+
+const { data: leads, error } = await supabaseAdmin
+	.from("contact_submissions")
+	.select("*")
+	.order("created_at", { ascending: false });
+
+function fmt(ts: string | null) {
+	if (!ts) return "—";
+	return new Date(ts).toLocaleString("en-KE", {
+		day: "numeric",
+		month: "short",
+		year: "numeric",
+		hour: "2-digit",
+		minute: "2-digit",
+	});
+}
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="robots" content="noindex, nofollow" />
+		<title>Leads — Portraits by Polo Admin</title>
+		<style>
+			*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+			:root {
+				--bg: #0a0a0a;
+				--surface: #141414;
+				--surface2: #1c1c1c;
+				--border: rgba(255,255,255,0.07);
+				--text: #e8e8e8;
+				--muted: rgba(232,232,232,0.45);
+				--accent: #c9a96e;
+				--s-new: #c9a96e;
+				--s-read: rgba(232,232,232,0.55);
+				--s-replied: oklch(68% 0.18 145);
+				--s-archived: rgba(232,232,232,0.3);
+				--s-spam: oklch(65% 0.22 25);
+			}
+			@media (prefers-color-scheme: light) {
+				:root {
+					--bg: #f5f4f0;
+					--surface: #ffffff;
+					--surface2: #f0efeb;
+					--border: rgba(0,0,0,0.09);
+					--text: #1a1a1a;
+					--muted: rgba(26,26,26,0.5);
+					--s-read: rgba(26,26,26,0.55);
+					--s-archived: rgba(26,26,26,0.3);
+				}
+			}
+			body {
+				background: var(--bg);
+				color: var(--text);
+				font-family: system-ui, -apple-system, sans-serif;
+				font-size: 0.875rem;
+				min-height: 100svh;
+			}
+			header {
+				position: sticky;
+				top: 0;
+				z-index: 10;
+				background: var(--surface);
+				border-bottom: 1px solid var(--border);
+				padding: 0.75rem 1.25rem;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 1rem;
+			}
+			.brand {
+				font-size: 0.7rem;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				color: var(--accent);
+			}
+			.header-right { display: flex; align-items: center; gap: 1rem; }
+			.count { font-size: 0.75rem; color: var(--muted); }
+			a.logout {
+				font-size: 0.7rem;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				color: var(--muted);
+				text-decoration: none;
+				padding: 0.375rem 0.75rem;
+				border: 1px solid var(--border);
+				border-radius: 4px;
+				transition: color 0.15s, border-color 0.15s;
+			}
+			a.logout:hover { color: var(--text); border-color: var(--muted); }
+			main { padding: 1rem 1.25rem 3rem; max-width: 1100px; margin: 0 auto; }
+			.error-banner {
+				background: oklch(65% 0.22 25 / 0.12);
+				border: 1px solid oklch(65% 0.22 25 / 0.3);
+				color: oklch(72% 0.18 25);
+				border-radius: 4px;
+				padding: 0.75rem 1rem;
+				margin-bottom: 1rem;
+				font-size: 0.8125rem;
+			}
+			/* Lead cards */
+			.leads { display: flex; flex-direction: column; gap: 0.5rem; }
+			.lead {
+				background: var(--surface);
+				border: 1px solid var(--border);
+				border-radius: 5px;
+				overflow: hidden;
+			}
+			.lead-header {
+				display: grid;
+				grid-template-columns: auto 1fr auto auto;
+				align-items: center;
+				gap: 0.75rem;
+				padding: 0.75rem 1rem;
+				cursor: pointer;
+				user-select: none;
+			}
+			.lead-header:hover { background: var(--surface2); }
+			.channel-badge {
+				font-size: 0.65rem;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				padding: 0.2rem 0.45rem;
+				border-radius: 3px;
+				border: 1px solid var(--border);
+				white-space: nowrap;
+				flex-shrink: 0;
+			}
+			.channel-badge.email { color: #7cb9f4; border-color: rgba(124,185,244,0.25); }
+			.channel-badge.whatsapp { color: #4fcb71; border-color: rgba(79,203,113,0.25); }
+			.lead-meta { min-width: 0; }
+			.lead-name {
+				font-weight: 500;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.lead-sub {
+				font-size: 0.75rem;
+				color: var(--muted);
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.lead-date { font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
+			.status-badge {
+				font-size: 0.65rem;
+				letter-spacing: 0.06em;
+				text-transform: uppercase;
+				padding: 0.2rem 0.5rem;
+				border-radius: 3px;
+				white-space: nowrap;
+				flex-shrink: 0;
+			}
+			.status-new     { color: var(--s-new);      background: oklch(71% 0.13 75 / 0.12);  }
+			.status-read    { color: var(--s-read);     background: rgba(232,232,232,0.06); }
+			.status-replied { color: var(--s-replied);  background: oklch(68% 0.18 145 / 0.1); }
+			.status-archived{ color: var(--s-archived); background: rgba(232,232,232,0.04); }
+			.status-spam    { color: var(--s-spam);     background: oklch(65% 0.22 25 / 0.1); }
+			/* Expanded detail */
+			.lead-detail {
+				display: none;
+				padding: 1rem;
+				border-top: 1px solid var(--border);
+				background: var(--surface2);
+				gap: 1rem;
+				flex-direction: column;
+			}
+			.lead.expanded .lead-detail { display: flex; }
+			.detail-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+				gap: 0.625rem;
+			}
+			.detail-item label {
+				display: block;
+				font-size: 0.65rem;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				color: var(--muted);
+				margin-bottom: 0.2rem;
+			}
+			.detail-item span {
+				font-size: 0.8125rem;
+				word-break: break-word;
+			}
+			.message-block label {
+				display: block;
+				font-size: 0.65rem;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				color: var(--muted);
+				margin-bottom: 0.35rem;
+			}
+			.message-text {
+				font-size: 0.875rem;
+				line-height: 1.6;
+				white-space: pre-wrap;
+				word-break: break-word;
+				background: var(--surface);
+				border: 1px solid var(--border);
+				border-radius: 4px;
+				padding: 0.75rem;
+			}
+			.actions-row {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.75rem;
+				align-items: flex-start;
+			}
+			.field-group { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 160px; }
+			.field-group label {
+				font-size: 0.65rem;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				color: var(--muted);
+			}
+			select, textarea.notes-input {
+				background: var(--surface);
+				border: 1px solid var(--border);
+				border-radius: 4px;
+				color: var(--text);
+				font-size: 0.8125rem;
+				padding: 0.5rem 0.625rem;
+				outline: none;
+				transition: border-color 0.15s;
+				width: 100%;
+				font-family: inherit;
+			}
+			select:focus, textarea.notes-input:focus { border-color: var(--accent); }
+			textarea.notes-input { resize: vertical; min-height: 80px; }
+			.save-indicator {
+				font-size: 0.7rem;
+				color: var(--s-replied);
+				opacity: 0;
+				transition: opacity 0.3s;
+				align-self: center;
+			}
+			.save-indicator.visible { opacity: 1; }
+			/* Chevron */
+			.chevron {
+				width: 1rem;
+				height: 1rem;
+				color: var(--muted);
+				transition: transform 0.2s;
+				flex-shrink: 0;
+			}
+			.lead.expanded .chevron { transform: rotate(180deg); }
+			/* Empty state */
+			.empty {
+				text-align: center;
+				color: var(--muted);
+				padding: 3rem 1rem;
+				font-size: 0.875rem;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<span class="brand">Portraits by Polo — Leads</span>
+			<div class="header-right">
+				<span class="count">{leads?.length ?? 0} submission{(leads?.length ?? 0) !== 1 ? "s" : ""}</span>
+				<a href="/admin/logout" class="logout">Sign out</a>
+			</div>
+		</header>
+
+		<main>
+			{error && (
+				<div class="error-banner">Failed to load leads: {error.message}</div>
+			)}
+
+			{!leads || leads.length === 0 ? (
+				<div class="empty">No submissions yet.</div>
+			) : (
+				<div class="leads">
+					{leads.map((lead) => (
+						<div class="lead" data-id={lead.id}>
+							<div class="lead-header" role="button" tabindex="0" aria-expanded="false">
+								<span class={`channel-badge ${lead.channel}`}>{lead.channel}</span>
+								<div class="lead-meta">
+									<div class="lead-name">
+										{lead.name ?? lead.email ?? "(WhatsApp)"}
+										{lead.inquiry_type && <span style="font-weight:400;opacity:0.6"> · {lead.inquiry_type}</span>}
+									</div>
+									<div class="lead-sub">
+										{lead.email && <span>{lead.email}</span>}
+										{lead.phone && <span>{lead.email ? " · " : ""}{lead.phone}</span>}
+										{lead.utm_source && <span style="opacity:0.7"> · via {lead.utm_source}</span>}
+									</div>
+								</div>
+								<span class="lead-date">{fmt(lead.created_at)}</span>
+								<span class={`status-badge status-${lead.status ?? "new"}`}>{lead.status ?? "new"}</span>
+								<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+								</svg>
+							</div>
+
+							<div class="lead-detail">
+								<div class="message-block">
+									<label>Message</label>
+									<div class="message-text">{lead.message}</div>
+								</div>
+
+								<div class="detail-grid">
+									{lead.preferred_date && (
+										<div class="detail-item">
+											<label>Timeframe</label>
+											<span>{lead.preferred_date}</span>
+										</div>
+									)}
+									{lead.source_url && (
+										<div class="detail-item">
+											<label>Source URL</label>
+											<span>{lead.source_url}</span>
+										</div>
+									)}
+									{lead.device_type && (
+										<div class="detail-item">
+											<label>Device</label>
+											<span>{lead.device_type}</span>
+										</div>
+									)}
+									{lead.utm_medium && (
+										<div class="detail-item">
+											<label>UTM Medium</label>
+											<span>{lead.utm_medium}</span>
+										</div>
+									)}
+									{lead.session_id && (
+										<div class="detail-item">
+											<label>Session ID</label>
+											<span style="font-size:0.7rem;font-family:monospace;opacity:0.6">{lead.session_id}</span>
+										</div>
+									)}
+									{lead.replied_at && (
+										<div class="detail-item">
+											<label>Replied at</label>
+											<span>{fmt(lead.replied_at)}</span>
+										</div>
+									)}
+								</div>
+
+								<div class="actions-row">
+									<div class="field-group" style="max-width:180px">
+										<label>Status</label>
+										<select class="status-select" data-id={lead.id} data-current={lead.status ?? "new"}>
+											{["new","read","replied","archived","spam"].map((s) => (
+												<option value={s} selected={s === (lead.status ?? "new")}>{s}</option>
+											))}
+										</select>
+									</div>
+									<div class="field-group">
+										<label>Internal notes</label>
+										<textarea
+											class="notes-input"
+											data-id={lead.id}
+											placeholder="Add notes…"
+										>{lead.notes ?? ""}</textarea>
+									</div>
+									<span class="save-indicator" data-id={lead.id}>Saved</span>
+								</div>
+							</div>
+						</div>
+					))}
+				</div>
+			)}
+		</main>
+
+		<script>
+			import { actions } from "astro:actions";
+
+			// Expand/collapse rows
+			document.querySelectorAll<HTMLElement>(".lead-header").forEach((hdr) => {
+				const toggle = () => {
+					const lead = hdr.closest<HTMLElement>(".lead");
+					if (!lead) return;
+					const expanded = lead.classList.toggle("expanded");
+					hdr.setAttribute("aria-expanded", String(expanded));
+
+					// Mark as read on first open
+					if (expanded) {
+						const id = lead.dataset.id!;
+						const select = lead.querySelector<HTMLSelectElement>(".status-select");
+						if (select && select.dataset.current === "new") {
+							select.value = "read";
+							select.dataset.current = "read";
+							void actions.admin.updateLeadStatus({ id, status: "read" });
+						}
+					}
+				};
+				hdr.addEventListener("click", toggle);
+				hdr.addEventListener("keydown", (e: KeyboardEvent) => {
+					if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+				});
+			});
+
+			// Status change
+			document.querySelectorAll<HTMLSelectElement>(".status-select").forEach((sel) => {
+				sel.addEventListener("change", async () => {
+					const id = sel.dataset.id!;
+					const status = sel.value as "new"|"read"|"replied"|"archived"|"spam";
+					sel.dataset.current = status;
+					const indicator = document.querySelector<HTMLElement>(`.save-indicator[data-id="${id}"]`);
+					const { error } = await actions.admin.updateLeadStatus({ id, status });
+					if (!error && indicator) {
+						indicator.textContent = "Saved";
+						indicator.classList.add("visible");
+						setTimeout(() => indicator.classList.remove("visible"), 2000);
+					}
+				});
+			});
+
+			// Notes autosave on blur
+			document.querySelectorAll<HTMLTextAreaElement>(".notes-input").forEach((ta) => {
+				let saveTimer: ReturnType<typeof setTimeout> | null = null;
+				const save = async () => {
+					const id = ta.dataset.id!;
+					const notes = ta.value;
+					const indicator = document.querySelector<HTMLElement>(`.save-indicator[data-id="${id}"]`);
+					const { error } = await actions.admin.updateLeadNotes({ id, notes });
+					if (!error && indicator) {
+						indicator.textContent = "Saved";
+						indicator.classList.add("visible");
+						setTimeout(() => indicator.classList.remove("visible"), 2000);
+					}
+				};
+				ta.addEventListener("blur", save);
+				ta.addEventListener("input", () => {
+					if (saveTimer) clearTimeout(saveTimer);
+					saveTimer = setTimeout(save, 1500);
+				});
+			});
+		</script>
+	</body>
+</html>

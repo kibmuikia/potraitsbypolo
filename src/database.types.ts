@@ -18,29 +18,59 @@ export type Database = {
         Row: {
           channel: string
           created_at: string | null
+          device_type: string | null
           email: string | null
           id: string
+          inquiry_type: string | null
           message: string
           name: string | null
+          notes: string | null
+          phone: string | null
           preferred_date: string | null
+          replied_at: string | null
+          session_id: string | null
+          source_url: string | null
+          status: string
+          utm_medium: string | null
+          utm_source: string | null
         }
         Insert: {
           channel: string
           created_at?: string | null
+          device_type?: string | null
           email?: string | null
           id?: string
+          inquiry_type?: string | null
           message: string
           name?: string | null
+          notes?: string | null
+          phone?: string | null
           preferred_date?: string | null
+          replied_at?: string | null
+          session_id?: string | null
+          source_url?: string | null
+          status?: string
+          utm_medium?: string | null
+          utm_source?: string | null
         }
         Update: {
           channel?: string
           created_at?: string | null
+          device_type?: string | null
           email?: string | null
           id?: string
+          inquiry_type?: string | null
           message?: string
           name?: string | null
+          notes?: string | null
+          phone?: string | null
           preferred_date?: string | null
+          replied_at?: string | null
+          session_id?: string | null
+          source_url?: string | null
+          status?: string
+          utm_medium?: string | null
+          utm_source?: string | null
         }
         Relationships: []
       }
