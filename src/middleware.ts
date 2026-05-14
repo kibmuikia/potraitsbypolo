@@ -7,18 +7,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
 	if (!pathname.startsWith("/admin")) return next();
 
-	// Logout: clear cookie and redirect
-	if (pathname === "/admin/logout") {
-		const response = context.redirect("/admin/login");
-		response.headers.set(
-			"Set-Cookie",
-			`${COOKIE_NAME}=; Path=/admin; HttpOnly; SameSite=Strict; Max-Age=0`,
-		);
-		return response;
-	}
-
-	// Login page is always accessible
-	if (pathname === "/admin/login") return next();
+	// Login and logout pages are always accessible
+	if (pathname === "/admin/login" || pathname === "/admin/logout") return next();
 
 	const token = context.request.headers
 		.get("cookie")
