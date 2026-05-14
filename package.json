@@ -5,7 +5,9 @@
 	"engines": {
 		"node": ">=22.12.0"
 	},
+	"packageManager": "pnpm@10.33.2",
 	"scripts": {
+		"preinstall": "only-allow pnpm",
 		"dev": "astro dev --host",
 		"dev:check": "astro check && astro dev --host",
 		"dev:cloudflare": "rimraf dist && npx astro build && npx wrangler dev --config dist/server/wrangler.json",
@@ -48,6 +50,7 @@
 		"eslint-plugin-prettier": "5.5.5",
 		"eslint-plugin-simple-import-sort": "13.0.0",
 		"globals": "17.6.0",
+		"only-allow": "^1.2.2",
 		"prettier": "^3.8.3",
 		"prettier-plugin-astro": "0.14.1",
 		"prettier-plugin-tailwindcss": "0.8.0",
