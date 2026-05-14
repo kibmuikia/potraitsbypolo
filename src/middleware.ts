@@ -10,12 +10,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 	// Login and logout pages are always accessible
 	if (pathname === "/admin/login" || pathname === "/admin/logout") return next();
 
-	const token = context.request.headers
-		.get("cookie")
-		?.split(";")
-		.map((c) => c.trim())
-		.find((c) => c.startsWith(`${COOKIE_NAME}=`))
-		?.slice(COOKIE_NAME.length + 1);
+	const token = context.cookies.get(COOKIE_NAME)?.value ?? "";
 
 	const expected = import.meta.env.ADMIN_TOKEN ?? "";
 
