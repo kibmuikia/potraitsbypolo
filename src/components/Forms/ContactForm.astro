@@ -518,6 +518,12 @@ const WA_DEFAULT_MSG =
 		}
 	}
 
+	/* base-950 remaps to near-white in dark mode — use a dark surface instead */
+	:global(.dark) .cf-toast {
+		background-color: var(--color-base-100);
+		color: var(--color-base-900);
+	}
+
 	.cf-toast[aria-hidden="false"] {
 		opacity: 1;
 		transform: translateY(0);

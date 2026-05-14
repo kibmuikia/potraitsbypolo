@@ -8,6 +8,8 @@
 .button--primary {
 	@apply bg-primary-200 text-base-900;
 	@apply hover:bg-primary-200/80;
+	@apply dark:bg-primary-700 dark:text-primary-100;
+	@apply dark:hover:bg-primary-700/80;
 	@apply focus-visible:ring-primary-300;
 }
 
