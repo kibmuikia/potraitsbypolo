@@ -22,6 +22,7 @@ export type Database = {
           email: string | null
           id: string
           inquiry_type: string | null
+          is_test: boolean
           message: string
           name: string | null
           notes: string | null
@@ -41,6 +42,7 @@ export type Database = {
           email?: string | null
           id?: string
           inquiry_type?: string | null
+          is_test?: boolean
           message: string
           name?: string | null
           notes?: string | null
@@ -60,6 +62,7 @@ export type Database = {
           email?: string | null
           id?: string
           inquiry_type?: string | null
+          is_test?: boolean
           message?: string
           name?: string | null
           notes?: string | null
