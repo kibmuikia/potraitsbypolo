@@ -42,6 +42,7 @@ function fmt(ts: string | null) {
 				--s-replied: oklch(68% 0.18 145);
 				--s-archived: rgba(232,232,232,0.3);
 				--s-spam: oklch(65% 0.22 25);
+				--s-test: oklch(72% 0.19 300);
 			}
 			@media (prefers-color-scheme: light) {
 				:root {
@@ -134,6 +135,18 @@ function fmt(ts: string | null) {
 			}
 			.channel-badge.email { color: #7cb9f4; border-color: rgba(124,185,244,0.25); }
 			.channel-badge.whatsapp { color: #4fcb71; border-color: rgba(79,203,113,0.25); }
+			.test-badge {
+				font-size: 0.6rem;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				padding: 0.2rem 0.4rem;
+				border-radius: 3px;
+				border: 1px solid oklch(72% 0.19 300 / 0.35);
+				color: var(--s-test);
+				background: oklch(72% 0.19 300 / 0.08);
+				white-space: nowrap;
+				flex-shrink: 0;
+			}
 			.lead-meta { min-width: 0; }
 			.lead-name {
 				font-weight: 500;
@@ -283,6 +296,7 @@ function fmt(ts: string | null) {
 						<div class="lead" data-id={lead.id}>
 							<div class="lead-header" role="button" tabindex="0" aria-expanded="false">
 								<span class={`channel-badge ${lead.channel}`}>{lead.channel}</span>
+								{lead.is_test && <span class="test-badge">dev</span>}
 								<div class="lead-meta">
 									<div class="lead-name">
 										{lead.name ?? lead.email ?? "(WhatsApp)"}

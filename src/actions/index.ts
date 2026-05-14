@@ -35,7 +35,8 @@ export const server = {
 			}),
 		]),
 		handler: async (input) => {
-			console.debug("[submitContact] channel=%s", input.channel);
+			const isTest = import.meta.env.DEV;
+			console.debug("[submitContact] channel=%s is_test=%s", input.channel, isTest);
 
 			const attr: Partial<TablesInsert<"contact_submissions">> = {
 				phone: input.phone ?? null,
@@ -45,6 +46,7 @@ export const server = {
 				utm_medium: input.utm_medium ?? null,
 				session_id: input.session_id ?? null,
 				device_type: input.device_type ?? null,
+				is_test: isTest,
 			};
 
 			let row: TablesInsert<"contact_submissions">;
